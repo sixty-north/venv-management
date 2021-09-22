@@ -28,7 +28,7 @@ def _sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    shell_path = os.environ["SHELL"]
+    shell_path = os.environ.get("SHELL", "/bin/sh")
     shell = os.path.basename(shell_path)
     try:
         template = SUB_SHELLS_TEMPLATES[shell]
