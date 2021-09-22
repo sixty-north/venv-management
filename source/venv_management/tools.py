@@ -12,6 +12,7 @@ logger = logging.getLogger(__file__)
 
 SUB_SHELLS_TEMPLATES = {
     "bash": "{shell_path} -c 'source ~/.bash_profile && {command}'",
+    "sh": "{shell_path} -c 'source ~/.profile && {command}'",
     "zsh": "{shell_path} -c 'source ~/.zshrc && {command}'",
 }
 
