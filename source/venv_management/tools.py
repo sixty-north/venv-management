@@ -49,9 +49,9 @@ def list_virtual_envs():
     Raises:
         FileNotFoundError: If virtualenvwrapper.sh could not be located.
     """
-    command = _sub_shell_command("lsvirtualenv -b")
+    command = _sub_shell_command("(lsvirtualenv -b || lsvirtualenvs -b)")
     logger.info(command)
-    status, output = subprocess.getstatusoutput(command)
+    status, output = _getstatusoutput(command)
     # proc = subprocess.Popen(["/bin/zsh"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
     # stdout, stderr = proc.communicate(b'source ~/.zshrc && lsvirtualenv -b\n')
     # print(stdout)
@@ -59,6 +59,28 @@ def list_virtual_envs():
     if status != 0:
         raise RuntimeError(f"Could not run {command}")
     return output.splitlines(keepends=False)
+
+
+def _getstatusoutput(cmd):
+    """    Return (status, output) of executing cmd in a shell.
+
+    Execute the string 'cmd' in a shell with 'check_output' and
+    return a 2-tuple (status, output). Universal newlines mode is used,
+    meaning that the result with be decoded to a string.
+
+    A trailing newline is stripped from the output.
+    The exit status for the command can be interpreted
+    according to the rules for the function 'wait'.
+    """
+    try:
+        data = subprocess.check_output(cmd, shell=True, universal_newlines=True)
+        status = 0
+    except subprocess.CalledProcessError as ex:
+        data = ex.output
+        status = ex.returncode
+    if data[-1:] == '\n':
+        data = data[:-1]
+    return status, data
 
 
 DESTINATION_PATTERN = r"dest=([^,]+)"
