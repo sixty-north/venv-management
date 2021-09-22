@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='venv-management',
-    version='1.0.4',
+    version='1.0.5',
     packages=find_packages('source'),
 
     author='Sixty North AS',
