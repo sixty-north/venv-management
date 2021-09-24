@@ -3,6 +3,7 @@
 import os
 import re
 import subprocess
+from contextlib import contextmanager
 from pathlib import Path
 import logging
 
@@ -194,6 +195,35 @@ def virtual_envs_dirpath():
         A path object.
     """
     return Path(os.path.expanduser(os.environ.get("WORKON_HOME", "~/.virtualenvs")))
+
+
+@contextmanager
+def virtual_env(name, expected_version=None, *, force=False, **kwargs):
+    """A context manager that ensures a virtualenv with the given name and version exists.
+
+    Irrespective of whether the virtual environment already exists, it will be removed when the context manager exits.
+
+    Args:
+        name: The name of the environment to check for.
+
+        expected_version: An optional required version as a string. "3.8" will match "3.8.2"
+
+        force: Force replacement of an existing virtual environment which has the wrong version.
+
+        **kwargs: Arguments which will be forwarded to mkvirtualenv if the environment
+            needs to be created.
+
+    Returns:
+        A context manager that manages the lifecycle of the virtual environment.
+
+    Raises:
+        RuntimeError: If the virtual environment couldn't be created or replaced.
+    """
+    venv_path = ensure_virtual_env(name, expected_version, force=force, **kwargs)
+    try:
+        yield venv_path
+    finally:
+        remove_virtual_env(name)
 
 
 def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs):
