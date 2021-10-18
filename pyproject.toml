@@ -4,6 +4,8 @@ testpaths = [
     "tests",
 ]
 norecursedirs="tests/helpers"
+log_cli = true
+log_cli_level = "DEBUG"
 
 [tool.black]
 line-length = 120
