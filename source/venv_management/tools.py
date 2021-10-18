@@ -6,7 +6,7 @@ import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 import logging
-
+from typing import List
 
 logger = logging.getLogger(__file__)
 
@@ -41,7 +41,12 @@ def _sub_shell_command(command):
     return command
 
 
-def list_virtual_envs():
+lsvirtualenv_commands = [
+    "lsvirtualenv -b",
+    "lsvirtualenvs -b",
+]
+
+def list_virtual_envs() -> List[str]:
     """A list of virtualenv names.
 
     Returns:
@@ -50,15 +55,21 @@ def list_virtual_envs():
     Raises:
         FileNotFoundError: If virtualenvwrapper.sh could not be located.
     """
-    command = _sub_shell_command("(lsvirtualenv -b || lsvirtualenvs -b)")
-    logger.info(command)
-    status, output = _getstatusoutput(command)
-    # proc = subprocess.Popen(["/bin/zsh"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-    # stdout, stderr = proc.communicate(b'source ~/.zshrc && lsvirtualenv -b\n')
-    # print(stdout)
-    # print(stderr)
-    if status != 0:
-        raise RuntimeError(f"Could not run {command}")
+    failed_commands = []
+    for lsvirtualenv_command in list(lsvirtualenv_commands):
+        command = _sub_shell_command(lsvirtualenv_command)
+        logger.info(command)
+        status, output = _getstatusoutput(command)
+        if status == 0:
+            break
+        failed_commands.append(lsvirtualenv_command)
+    else:  # no-break
+        for failed_command in failed_commands:
+            lsvirtualenv_commands.remove(failed_command)
+        failure_message = "Could not list virtual environments with failed commands: {}".format(
+            " ; ".join(failed_commands))
+        logger.error(failure_message)
+        raise RuntimeError(failure_message)
     return output.splitlines(keepends=False)
 
 
