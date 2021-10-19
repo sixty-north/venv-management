@@ -11,16 +11,8 @@ from typing import List
 logger = logging.getLogger(__file__)
 
 
-SUB_SHELLS_TEMPLATES = {
-    "bash": "{shell_path} -c -i '{{ [[ -f ~/.bash_profile ]] && source ~/.bash_profile || source ~/.profile ; }} && {command}'",
-    "dash": "{shell_path} -c '. ~/.profile && {command}'",
-    "sh": "{shell_path} -c '. ~/.profile && {command}'",
-    "zsh": "{shell_path} -c 'source ~/.zshrc && {command}'",
-}
-
-
-def _sub_shell_command(command):
-    """Build a command to run a given command in a subshell.
+def _interactive_sub_shell_command(command):
+    """Build a command to run a given command in an interactive subshell.
 
     Args:
         command: The command for the subshell.
@@ -31,14 +23,7 @@ def _sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    shell_path = os.environ.get("SHELL", "/bin/sh")
-    shell = os.path.basename(shell_path)
-    try:
-        template = SUB_SHELLS_TEMPLATES[shell]
-    except KeyError:
-        raise ValueError("Don't know how to initialize {shell}")
-    command = template.format(shell_path=shell_path, command=command)
-    return command
+    return f"$SHELL -c -i '{command}'"
 
 
 def has_virtualenvwrapper():
@@ -71,7 +56,7 @@ def list_virtual_envs() -> List[str]:
     """
     failed_commands = []
     for lsvirtualenv_command in list(lsvirtualenv_commands):
-        command = _sub_shell_command(lsvirtualenv_command)
+        command = _interactive_sub_shell_command(lsvirtualenv_command)
         logger.info(command)
         status, output = _getstatusoutput(command)
         if status == 0:
@@ -182,7 +167,7 @@ def make_virtual_env(
         )
     )
 
-    command = _sub_shell_command(f"mkvirtualenv {name} {args}")
+    command = _interactive_sub_shell_command(f"mkvirtualenv {name} {args}")
     logger.info(command)
     status, output = subprocess.getstatusoutput(command)
     if status != 0:
@@ -312,7 +297,7 @@ def remove_virtual_env(name):
         ValueError: If there is no environment with the given name.
         RuntimeError: If the virtualenv could not be removed.
     """
-    command = _sub_shell_command(f"rmvirtualenv {name}")
+    command = _interactive_sub_shell_command(f"rmvirtualenv {name}")
     logger.info(command)
     status, output = subprocess.getstatusoutput(command)
     if status != 0:
