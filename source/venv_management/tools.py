@@ -41,6 +41,20 @@ def _sub_shell_command(command):
     return command
 
 
+def has_virtualenvwrapper():
+    """Determine whether virtualenvwrapper available and working.
+
+    Returns:
+        True if virtualenvwrapper is available and working,
+        otherwise False.
+    """
+    try:
+        lsvirtualenv()
+    except RuntimeError:
+        return False
+    return True
+
+
 lsvirtualenv_commands = [
     "lsvirtualenv -b",
     "lsvirtualenvs -b",
