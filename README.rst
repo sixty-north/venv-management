@@ -4,6 +4,23 @@ Venv Management
 
 A Python package for programmatic creation of Python virtual environments
 
+
+Prerequisites
+=============
+
+A virtualenvwrapper installation must have been installed and be available in a login shell. The
+following virtualenvwrapper implementations have been tested:
+
+  * `virtualenvwrapper <https://pypi.org/project/virtualenvwrapper/>`_
+  * `virtualenvwrapper-sh <https://pypi.org/project/virtualenv-sh/>`_
+  * `pyenv-virtualenvwrapper <https://github.com/pyenv/pyenv-virtualenvwrapper>`_
+
+Possibly in future we will also support:
+
+  * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
+  * `pew <https://pypi.org/project/pew/>`_
+
+
 Manual release
 ==============
 
