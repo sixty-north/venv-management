@@ -23,12 +23,12 @@ def _interactive_sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    venv_wrapper_shell_filepath = os.environ.get("VENV_MANAGEMENT_SHELL_FILEPATH", "/bin/bash")
-    venvwrapper_setup_filepath = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc")
+    shell_filepath = os.environ.get("VENV_MANAGEMENT_SHELL_FILEPATH", "/bin/bash")
+    setup_filepath = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc")
     # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
     #  set. Look for a more reliable means of spawning an interactive subshell.
     #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
-    return f"{venv_wrapper_shell_filepath} -c -i '. {venvwrapper_setup_filepath} && {command}'"
+    return f"{shell_filepath} -c -i '. {setup_filepath} && {command}'"
 
 
 def has_virtualenvwrapper():
