@@ -62,8 +62,10 @@ def list_virtual_envs() -> List[str]:
     failed_commands = []
     for lsvirtualenv_command in list(lsvirtualenv_commands):
         command = _interactive_sub_shell_command(lsvirtualenv_command)
-        logger.info(command)
+        logger.debug(command)
         status, output = _getstatusoutput(command)
+        logger.debug("status = %d", status)
+        logger.debug("output = %s", output)
         if status == 0:
             break
         failed_commands.append(lsvirtualenv_command)
