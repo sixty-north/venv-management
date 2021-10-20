@@ -23,6 +23,9 @@ def _interactive_sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
+    # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
+    #  set. Look for a more reliable means of spawning an interactive subshell.
+    #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
     return f"$SHELL -c -i '{command}'"
 
 
