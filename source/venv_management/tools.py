@@ -15,7 +15,7 @@ from typing import List
 logger = logging.getLogger(__file__)
 
 
-def _interactive_sub_shell_command(command):
+def _sub_shell_command(command):
     """Build a command to run a given command in an interactive subshell.
 
     Args:
@@ -87,7 +87,7 @@ def list_virtual_envs() -> List[str]:
     """
     failed_commands = []
     for lsvirtualenv_command in list(lsvirtualenv_commands):
-        command = _interactive_sub_shell_command(lsvirtualenv_command)
+        command = _sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
         status, output = _getstatusoutput(command)
         logger.debug("status = %d", status)
@@ -209,7 +209,7 @@ def make_virtual_env(
         )
     )
 
-    command = _interactive_sub_shell_command(f"mkvirtualenv {name} {args}")
+    command = _sub_shell_command(f"mkvirtualenv {name} {args}")
     logger.info(command)
     status, output = subprocess.getstatusoutput(command)
     if status != 0:
@@ -339,7 +339,7 @@ def remove_virtual_env(name):
         ValueError: If there is no environment with the given name.
         RuntimeError: If the virtualenv could not be removed.
     """
-    command = _interactive_sub_shell_command(f"rmvirtualenv {name}")
+    command = _sub_shell_command(f"rmvirtualenv {name}")
     logger.info(command)
     status, output = subprocess.getstatusoutput(command)
     if status != 0:
