@@ -87,7 +87,6 @@ def has_virtualenvwrapper():
 
 
 lsvirtualenv_commands = [
-    "mktmpenv",
     "lsvirtualenv -b",
     "lsvirtualenvs -b",
 ]
@@ -106,7 +105,7 @@ def list_virtual_envs() -> List[str]:
         command = _sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
         status, output = _getstatusoutput(command)
-        if status == 0:
+        if status == 0 or status == 1:
             break
         failed_commands.append(lsvirtualenv_command)
     else:  # no-break
@@ -138,7 +137,7 @@ def _getstatusoutput(cmd):
         encoding=sys.getdefaultencoding()
     )
     status = process.returncode
-    if status == 0:
+    if status == 0 or status == 1:
         data = process.stdout
         if data[-1:] == '\n':
             data = data[:-1]
