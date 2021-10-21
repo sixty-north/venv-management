@@ -87,7 +87,7 @@ def has_virtualenvwrapper():
 
 
 lsvirtualenv_commands = [
-    "workon",
+    "mktmpenv",
     "lsvirtualenv -b",
     "lsvirtualenvs -b",
 ]
