@@ -44,14 +44,20 @@ def _sub_shell_command(command):
     logger.debug("rc_filepath = %r", rc_filepath)
     interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
     logger.debug("interactive = %s", interactive)
+    commands = []
+    use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "no")))
     setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
+    if use_setup:
+        commands.append(f". {setup_filepath}")
+    if command:
+        commands.append(command)
+
     logger.debug("setup_filepath = %s", setup_filepath)
-    conjunction = "&&" if command else ""
     args = [
         str(shell_filepath),
         "-c",  # Run command
         *(["-i"] if interactive else []),
-        f". {setup_filepath!s} {conjunction} {command}",
+        " && ".join(commands),
     ]
     return args
 
