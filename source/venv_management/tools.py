@@ -10,7 +10,7 @@ from os.path import expandvars
 from pathlib import Path
 import logging
 from shutil import which
-from typing import List
+from typing import List, Tuple
 
 logger = logging.getLogger(__file__)
 
@@ -46,15 +46,24 @@ def _sub_shell_command(command):
     logger.debug("interactive = %s", interactive)
     setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
     logger.debug("setup_filepath = %s", setup_filepath)
-    if not setup_filepath.is_file():
-        raise RuntimeError(f"Could not find setup file {setup_filepath}")
+    conjunction = "&&" if command else ""
     args = [
         str(shell_filepath),
         "-c",  # Run command
         *(["-i"] if interactive else []),
-        f". {setup_filepath!s} && {command}",
+        f". {setup_filepath!s} {conjunction} {command}",
     ]
     return args
+
+
+def check_environment() -> Tuple[int, str]:
+    """
+
+    Returns: A 2-tuple containing the status output of the setup command, and text output
+
+    """
+    command = _sub_shell_command("")
+    return _getstatusoutput(command)
 
 
 def has_virtualenvwrapper():
@@ -90,8 +99,6 @@ def list_virtual_envs() -> List[str]:
         command = _sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
         status, output = _getstatusoutput(command)
-        logger.debug("status = %d", status)
-        logger.debug("output = %s", output)
         if status == 0:
             break
         failed_commands.append(lsvirtualenv_command)
@@ -133,6 +140,8 @@ def _getstatusoutput(cmd):
                 f"STDOUT: {process.stdout} ; \n"
                 f"STDERR: {process.stderr}"
         )
+    logger.debug("status = %d", status)
+    logger.debug("data = %s", data)
     return status, data
 
 
@@ -297,6 +306,9 @@ def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs):
     Raises:
         RuntimeError: If the virtual environment couldn't be created or replaced.
     """
+    status, output = check_environment()
+    if status != 0:
+        raise RuntimeError(output)
     python_arg = f"python{expected_version}" if (expected_version is not None) else None
     try:
         env_dirpath = resolve_virtual_env(name)
