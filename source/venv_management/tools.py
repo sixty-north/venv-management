@@ -5,8 +5,11 @@ import re
 import subprocess
 import sys
 from contextlib import contextmanager
+from distutils.util import strtobool
+from os.path import expandvars
 from pathlib import Path
 import logging
+from shutil import which
 from typing import List
 
 logger = logging.getLogger(__file__)
@@ -24,12 +27,21 @@ def _interactive_sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    shell_filepath = os.path.expandvars(os.environ.get("VENV_MANAGEMENT_SHELL_FILEPATH", "/bin/bash"))
-    setup_filepath = os.path.expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc"))
+    # TODO: Consider using the $SHELL variable to get the user's preferred shell
+    shell_filepath = which(expandvars(os.environ.get("VENV_MANAGEMENT_SHELL", "bash")))
+    # TODO: Use a mapping of shell names to bash rc files.
+    interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
+    setup_filepath = expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc"))
     # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
     #  set. Look for a more reliable means of spawning an interactive subshell.
     #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
-    return [shell_filepath, "-c", f". {setup_filepath} && {command}"]
+    args = [
+        shell_filepath,
+        "-c",  # Run command
+        *(["-i"] if interactive else []),
+        f". {setup_filepath} && {command}",
+    ]
+    return args
 
 
 def has_virtualenvwrapper():
