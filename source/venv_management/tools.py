@@ -236,9 +236,13 @@ def make_virtual_env(
         raise RuntimeError(f"Could not run {command}")
     lines = output.splitlines(keepends=False)
     for line in lines:
+        logger.debug("line = %s", line)
         m = DESTINATION_REGEX.search(line)
         if m is not None:
-            return Path(m.group(1))
+            dest = m.group(1)
+            logger.debug("Found dest = %s", dest)
+            return Path(dest)
+    logger.warning("Could not find dest for virtualenv %r", name)
     return None
 
 
