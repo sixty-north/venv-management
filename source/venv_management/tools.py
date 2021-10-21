@@ -231,7 +231,7 @@ def make_virtual_env(
 
     command = _sub_shell_command(f"mkvirtualenv {name} {args}")
     logger.info(command)
-    status, output = subprocess.getstatusoutput(command)
+    status, output = _getstatusoutput(command)
     if status != 0:
         raise RuntimeError(f"Could not run {command}")
     lines = output.splitlines(keepends=False)
