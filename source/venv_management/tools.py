@@ -100,12 +100,13 @@ def list_virtual_envs() -> List[str]:
     Raises:
         FileNotFoundError: If virtualenvwrapper.sh could not be located.
     """
+    success_statuses = {0, 1}
     failed_commands = []
     for lsvirtualenv_command in list(lsvirtualenv_commands):
         command = _sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
-        status, output = _getstatusoutput(command)
-        if status == 0 or status == 1:
+        status, output = _getstatusoutput(command, success_statuses=success_statuses)
+        if status in success_statuses:
             break
         failed_commands.append(lsvirtualenv_command)
     else:  # no-break
@@ -118,7 +119,7 @@ def list_virtual_envs() -> List[str]:
     return output.splitlines(keepends=False)
 
 
-def _getstatusoutput(cmd):
+def _getstatusoutput(cmd, success_statuses=None):
     """    Return (status, output) of executing cmd in a shell.
 
     Execute the string 'cmd' in a shell with 'check_output' and
@@ -129,6 +130,8 @@ def _getstatusoutput(cmd):
     The exit status for the command can be interpreted
     according to the rules for the function 'wait'.
     """
+    if success_statuses is None:
+        success_statuses = {0}
     logger.debug("command = %r", cmd)
     process = subprocess.run(
         cmd,
@@ -137,14 +140,16 @@ def _getstatusoutput(cmd):
         encoding=sys.getdefaultencoding()
     )
     status = process.returncode
-    if status == 0 or status == 1:
-        data = process.stdout
+    stderr = process.stderr
+    stdout = process.stdout
+    if status in success_statuses and len(stderr) == 0:
+        data = stdout
         if data[-1:] == '\n':
             data = data[:-1]
     else:
         data = (f"STATUS: {status} ; \n"
-                f"STDOUT: {process.stdout} ; \n"
-                f"STDERR: {process.stderr}"
+                f"STDOUT: {stdout} ; \n"
+                f"STDERR: {stderr}"
         )
     logger.debug("status = %d", status)
     logger.debug("data = %s", data)
