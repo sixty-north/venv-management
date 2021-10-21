@@ -27,19 +27,32 @@ def _interactive_sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    # TODO: Consider using the $SHELL variable to get the user's preferred shell
-    shell_filepath = which(expandvars(os.environ.get("VENV_MANAGEMENT_SHELL", "bash")))
-    # TODO: Use a mapping of shell names to bash rc files.
+    preferred_shell_name = os.environ.get("SHELL", "bash")
+    logger.debug("preferred_shell_name from $SHELL = %r", preferred_shell_name)
+    shell_name = expandvars(os.environ.get("VENV_MANAGEMENT_SHELL", preferred_shell_name))
+    logger.debug("shell_name = %r", shell_name)
+    shell_filepath = which(shell_name)
+    logger.debug("shell_filepath = %r", shell_filepath)
+    if shell_filepath is None:
+        raise RuntimeError(f"Could not determine the path to {shell_name}")
+    shell_filepath = Path(shell_filepath)
+    shell_filename = shell_filepath.name
+    logger.debug("shell_filename = %r", shell_filename)
+    rc_filename = f".{shell_filename}rc"
+    logger.debug("rc_filename = %r", rc_filename)
+    rc_filepath = Path.home() / rc_filename
+    logger.debug("rc_filepath = %r", rc_filepath)
     interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
-    setup_filepath = expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc"))
-    # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
-    #  set. Look for a more reliable means of spawning an interactive subshell.
-    #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
+    logger.debug("interactive = %s", interactive)
+    setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
+    logger.debug("setup_filepath = %s", setup_filepath)
+    if not setup_filepath.is_file():
+        raise RuntimeError(f"Could not find setup file {setup_filepath}")
     args = [
-        shell_filepath,
+        str(shell_filepath),
         "-c",  # Run command
         *(["-i"] if interactive else []),
-        f". {setup_filepath} && {command}",
+        f". {setup_filepath!s} && {command}",
     ]
     return args
 
