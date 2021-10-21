@@ -29,7 +29,7 @@ def _interactive_sub_shell_command(command):
     # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
     #  set. Look for a more reliable means of spawning an interactive subshell.
     #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
-    return [shell_filepath, "-c", "-i", f". {setup_filepath} && {command}"]
+    return [shell_filepath, "-c", f". {setup_filepath} && {command}"]
 
 
 def has_virtualenvwrapper():
