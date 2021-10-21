@@ -3,6 +3,7 @@
 import os
 import re
 import subprocess
+import sys
 from contextlib import contextmanager
 from pathlib import Path
 import logging
@@ -23,12 +24,12 @@ def _interactive_sub_shell_command(command):
     Raises:
         ValueError: If the subshell command could not be determined.
     """
-    shell_filepath = os.environ.get("VENV_MANAGEMENT_SHELL_FILEPATH", "/bin/bash")
-    setup_filepath = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc")
+    shell_filepath = os.path.expandvars(os.environ.get("VENV_MANAGEMENT_SHELL_FILEPATH", "/bin/bash"))
+    setup_filepath = os.path.expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", "$HOME/.bashrc"))
     # TODO: The $SHELL environment variable is not guaranteed to be set, or to be accurate if it is
     #  set. Look for a more reliable means of spawning an interactive subshell.
     #  See: https://stackoverflow.com/questions/3327013/how-to-determine-the-current-shell-im-working-on
-    return f"{shell_filepath} -c -i '. {setup_filepath} && {command}'"
+    return [shell_filepath, "-c", "-i", f". {setup_filepath} && {command}"]
 
 
 def has_virtualenvwrapper():
@@ -90,14 +91,23 @@ def _getstatusoutput(cmd):
     The exit status for the command can be interpreted
     according to the rules for the function 'wait'.
     """
-    try:
-        data = subprocess.check_output(cmd, shell=True, universal_newlines=True)
-        status = 0
-    except subprocess.CalledProcessError as ex:
-        data = ex.output
-        status = ex.returncode
-    if data[-1:] == '\n':
-        data = data[:-1]
+    logger.debug("command = %r", cmd)
+    process = subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        encoding=sys.getdefaultencoding()
+    )
+    status = process.returncode
+    if status == 0:
+        data = process.stdout
+        if data[-1:] == '\n':
+            data = data[:-1]
+    else:
+        data = (f"STATUS: {status} ; \n"
+                f"STDOUT: {process.stdout} ; \n"
+                f"STDERR: {process.stderr}"
+        )
     return status, data
 
 
