@@ -103,6 +103,8 @@ def list_virtual_envs() -> List[str]:
     Raises:
         FileNotFoundError: If virtualenvwrapper.sh could not be located.
     """
+    # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
+    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
     success_statuses = {0, 1}
     failed_commands = []
     failed_outputs = []
@@ -240,6 +242,8 @@ def make_virtual_env(
 
     command = _sub_shell_command(f"mkvirtualenv {name} {args}")
     logger.info(command)
+    # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
+    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
     success_statuses = {0, 1}
     status, output = _getstatusoutput(command, success_statuses=success_statuses)
     if status not in success_statuses:
