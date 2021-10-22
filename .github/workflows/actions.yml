@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-with-virtualenv-sh:
     name: "Test with Pytest"
     runs-on: "ubuntu-latest"
     steps:
