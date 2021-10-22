@@ -142,7 +142,7 @@ def _getstatusoutput(cmd, success_statuses=None):
     status = process.returncode
     stderr = process.stderr
     stdout = process.stdout
-    if status in success_statuses and len(stderr) == 0:
+    if status in success_statuses:
         data = stdout
         if data[-1:] == '\n':
             data = data[:-1]
