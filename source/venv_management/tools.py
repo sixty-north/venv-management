@@ -130,8 +130,12 @@ def list_virtual_envs() -> List[str]:
     return output.splitlines(keepends=False)
 
 
-def _getstatusoutput(cmd, success_statuses=None):
+def _getstatusoutput(cmd: list[str], success_statuses=None):
     """    Return (status, output) of executing cmd in a shell.
+
+    Args:
+        cmd: A list of command arguments to be executed.
+        success_statuses: A container of integer status codes which indicate success.
 
     Execute the string 'cmd' in a shell with 'check_output' and
     return a 2-tuple (status, output). Universal newlines mode is used,
@@ -370,7 +374,7 @@ def _compatible_versions(actual_version, expected_version):
     )
 
 
-def remove_virtual_env(name):
+def remove_virtual_env(name: str):
     """Remove a virtual environment.
 
     Args:
@@ -380,13 +384,25 @@ def remove_virtual_env(name):
         ValueError: If there is no environment with the given name.
         RuntimeError: If the virtualenv could not be removed.
     """
+    if not name:
+        # When provided with an empty string, rmvirtualenv removes all virtual environments (!)
+        # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/346/rmvirtualenv-removes-all-virtualenvs
+        raise ValueError("No name provided to remove_virtual_env")
     command = _sub_shell_command(f"rmvirtualenv {name}")
     logger.info(command)
-    status, output = subprocess.getstatusoutput(command)
-    if status != 0:
-        raise RuntimeError(f"Could not run {command}")
-    if "Did not find environment" in output:
-        raise ValueError(output.splitlines(keepends=False)[1])
+
+    logger.debug("command = %r", command)
+    process = subprocess.run(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        encoding=sys.getdefaultencoding()
+    )
+    # rmvirtualenv returns success (0) even when it fails.
+    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
+    stderr = process.stderr
+    if len(stderr) != 0:
+        raise ValueError(stderr)
 
 
 def discard_virtual_env(name):
