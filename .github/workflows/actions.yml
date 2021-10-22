@@ -11,7 +11,7 @@ on:
 
 jobs:
   test-with-virtualenv-sh:
-    name: "Test with Pytest"
+    name: "Pytest with virtualenv-sh"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
