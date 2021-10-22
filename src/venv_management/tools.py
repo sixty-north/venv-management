@@ -6,7 +6,7 @@ import subprocess
 import sys
 from contextlib import contextmanager
 from distutils.util import strtobool
-from os.path import expandvars
+from os.path import expandvars, expanduser
 from pathlib import Path
 import logging
 from shutil import which
@@ -47,9 +47,9 @@ def _sub_shell_command(command, suppress_setup_output=True):
     interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
     logger.debug("interactive = %s", interactive)
     commands = []
-    # TODO: Use expanduser
     use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
-    setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
+    setup_filepath_str = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))
+    setup_filepath = Path(expanduser(expandvars(setup_filepath_str)))
     if use_setup:
         redirection = " 1>/dev/null 2>&1" if suppress_setup_output else ""
         commands.append(f". {setup_filepath}{redirection}")
