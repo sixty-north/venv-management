@@ -43,17 +43,34 @@ default, ``venv-management`` will source the ``rc`` file corresponding to the se
 example ``.bashrc`` for ``bash``, ``.zshrc`` for ``zsh``, and so on, on the basis that
 ``virtualenvwrapper`` initialization is often performed from these files. If the ``rc`` file for
 the selected shell can only be usefully sources in an interactive shell, set
-``VENV_MANAGEMENT_INTERACTIVE_SHELL`` to ``yes``,::
+``VENV_MANAGEMENT_INTERACTIVE_SHELL`` to ``yes``::
 
 
   export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
 
 Should you wish to specify a different file for shell configuration, provide its path in the
-``VENV_MANAGEMENT_SETUP_FILEPATH`` environment variable, for example::
+``VENV_MANAGEMENT_SETUP_FILEPATH`` environment variable. For example, since ``.bashrc`` returns
+immediately in non-interactive shells, and only login shells source ``.profile`` on start-up,
+you may want to set up both ``pyenv`` and ``virtualenvwrapper`` in a separate file, in this example
+called ``.venvwraprc``::
 
-  export VENV_MANAGEMENT_SETUP_FILEPATH=~/.venvwraprc
+  export PYENV_ROOT=$HOME/.pyenv
+  export PATH=$PYENV_ROOT/bin:$PATH
+  eval "$(pyenv init -)"
+  eval "$(pyenv init --path)"
+  pyenv virtualenvwrapper
 
-TBC
+
+If the ``VENV_MANAGEMENT_USE_SETUP`` is set to ``yes``, the script whose filepath is specified in the
+``VENV_MANAGEMENT_SETUP_FILEPATH`` variable will be sourced before every command provided by this package::
+
+  export VENV_MANAGEMENT_USE_SETUP=yes
+  export VENV_MANAGEMENT_SETUP_FILEPATH=$HOME/.venvwraprc
+
+
+You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or ``.`` command,
+so that ``virtualenvwrapper`` could be used in interactive shells.
+
 
 Manual release
 ==============
@@ -74,3 +91,4 @@ Create the source and the binary distribution (outputs in the ``dist`` directory
 Remove old versions in the ``dist`` directory and use the following command to upload its contents to PyPI::
 
     $ twine upload dist/* --config-file=<path/to/file/with/credentials.pypirc>
+
