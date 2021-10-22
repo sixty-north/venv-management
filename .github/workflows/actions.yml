@@ -26,7 +26,7 @@ jobs:
           echo "echo 'About to run /usr/local/bin/virtualenv-sh.sh'" >> ${HOME}/.bashrc
           echo ". /usr/local/bin/virtualenv-sh.sh" >> ${HOME}/.bashrc
           echo "WORKON_HOME=${HOME}/.virtualenvs" >> ${HOME}/.bashrc
-          source ${HOME}/.bashrc
+          export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
