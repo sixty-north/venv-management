@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-with-virtualenv-sh:
+  test-with-virtualenv-sh-interactive:
     name: "Pytest with virtualenv-sh"
     runs-on: "ubuntu-latest"
     steps:
@@ -31,7 +31,7 @@ jobs:
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
-  test-with-virtualenvwrapper:
+  test-with-virtualenvwrapper-interactive:
     name: "Pytest with virtualenvwrapper"
     runs-on: "ubuntu-latest"
     steps:
@@ -53,7 +53,7 @@ jobs:
           python -m pytest tests
 
 
-  test-with-virtualenvwrapper-and-venvwraprc:
+  test-with-virtualenvwrapper-and-venvwraprc-noninterative:
     name: "Pytest with virtualenvwrapper and .venvwraprc"
     runs-on: "ubuntu-latest"
     steps:
