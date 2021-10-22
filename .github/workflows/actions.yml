@@ -56,7 +56,7 @@ jobs:
 
 
   test-with-virtualenvwrapper-and-venvwraprc:
-    name: "Pytest with virtualenvwrapper"
+    name: "Pytest with virtualenvwrapper and .venvwraprc"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
