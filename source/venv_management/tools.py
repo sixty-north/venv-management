@@ -102,6 +102,7 @@ def list_virtual_envs() -> List[str]:
     """
     success_statuses = {0, 1}
     failed_commands = []
+    failed_outputs = []
     for lsvirtualenv_command in list(lsvirtualenv_commands):
         command = _sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
@@ -109,13 +110,18 @@ def list_virtual_envs() -> List[str]:
         if status in success_statuses:
             break
         failed_commands.append(lsvirtualenv_command)
+        failed_outputs.append(output)
     else:  # no-break
         for failed_command in failed_commands:
             lsvirtualenv_commands.remove(failed_command)
-        failure_message = "Could not list virtual environments with failed commands: {}".format(
-            " ; ".join(failed_commands))
-        logger.error(failure_message)
-        raise RuntimeError(failure_message)
+        failure_messages = ["Could not list virtual environments any of the attempted commands"]
+        failure_messages.extend(
+            f"{failed_command} :\n{failed_output}"
+            for failed_command, failed_output in zip(failed_commands, failed_outputs)
+        )
+        for failure_message in failure_messages:
+            logger.error(failure_message)
+        raise RuntimeError("\n\n".join(failure_messages))
     return output.splitlines(keepends=False)
 
 
