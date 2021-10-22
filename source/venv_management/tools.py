@@ -231,8 +231,9 @@ def make_virtual_env(
 
     command = _sub_shell_command(f"mkvirtualenv {name} {args}")
     logger.info(command)
-    status, output = _getstatusoutput(command)
-    if status != 0:
+    success_statuses = {0, 1}
+    status, output = _getstatusoutput(command, success_statuses=success_statuses)
+    if status not in success_statuses:
         raise RuntimeError(f"Could not run {command}")
     lines = output.splitlines(keepends=False)
     for line in lines:
