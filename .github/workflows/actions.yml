@@ -100,6 +100,11 @@ jobs:
 
   package:
     name: "Build Package Distributions"
+    needs:
+      - test-with-virtualenv-sh-interactive
+      - test-with-virtualenvwrapper-interactive
+      - test-with-virtualenvwrapper-and-venvwraprc-noninterative
+      - test-with-virtualenvwrapper-and-venvwraprc-interactive
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
