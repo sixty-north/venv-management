@@ -32,6 +32,28 @@ jobs:
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
+  test-with-virtualenvwrapper:
+    name: "Pytest with virtualenvwrapper"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up Python"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --user --upgrade pip
+          python -m pip install --user virtualenvwrapper
+          echo "echo 'About to run ~/.local/bin/virtualenvwrapper.sh'" >> ${HOME}/.bashrc
+          echo '. ${HOME}/.local/bin/virtualenvwrapper.sh' >> ${HOME}/.bashrc
+          echo 'WORKON_HOME=${HOME}/.virtualenvs' >> ${HOME}/.bashrc
+          python -m pip install .[test]
+      - name: "Run Pytest"
+        run: |
+          export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
+          python -m pytest tests
+
   package:
     name: "Build Package Distributions"
     runs-on: "ubuntu-latest"
