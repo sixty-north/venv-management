@@ -50,7 +50,8 @@ def _sub_shell_command(command, suppress_setup_output=True):
     use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
     setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
     if use_setup:
-        redirection = " 1>/dev/null 2>&1" if suppress_setup_output else ""
+        redirection = ""
+        #redirection = " 1>/dev/null 2>&1" if suppress_setup_output else ""
         commands.append(f". {setup_filepath}{redirection}")
     if command:
         commands.append(command)
