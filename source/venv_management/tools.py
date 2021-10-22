@@ -15,11 +15,13 @@ from typing import List, Tuple
 logger = logging.getLogger(__file__)
 
 
-def _sub_shell_command(command):
+def _sub_shell_command(command, suppress_setup_output=True):
     """Build a command to run a given command in an interactive subshell.
 
     Args:
         command: The command for the subshell.
+        suppress_setup_output: Suppress output from the environment setup command if True,
+            (the default), otherwise capture it.
 
     Returns:
         A string which can be used with the subprocess module.
@@ -48,7 +50,8 @@ def _sub_shell_command(command):
     use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
     setup_filepath = Path(expandvars(os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))))
     if use_setup:
-        commands.append(f". {setup_filepath}")
+        redirection = " 2>&1 1>/dev/null" if suppress_setup_output else ""
+        commands.append(f". {setup_filepath}{redirection}")
     if command:
         commands.append(command)
 
@@ -68,7 +71,7 @@ def check_environment() -> Tuple[int, str]:
     Returns: A 2-tuple containing the status output of the setup command, and text output
 
     """
-    command = _sub_shell_command("")
+    command = _sub_shell_command("", suppress_setup_output=False)
     return _getstatusoutput(command)
 
 
