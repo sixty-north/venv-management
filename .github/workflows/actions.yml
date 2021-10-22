@@ -24,7 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install virtualenv-sh
           echo "echo 'About to run /usr/local/bin/virtualenv-sh.sh'" >> ${HOME}/.bashrc
-          echo ". /usr/local/bin/virtualenv-sh.sh" >> ${HOME}/.bashrc
+          echo ". /usr/local/bin/virtualenv-sh.bash" >> ${HOME}/.bashrc
           echo "WORKON_HOME=${HOME}/.virtualenvs" >> ${HOME}/.bashrc
           python -m pip install .[test]
       - name: "Run Pytest"
