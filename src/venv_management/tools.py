@@ -5,65 +5,15 @@ import re
 import subprocess
 import sys
 from contextlib import contextmanager
-from distutils.util import strtobool
-from os.path import expandvars, expanduser
 from pathlib import Path
 import logging
-from shutil import which
 from typing import List, Tuple
 
+from venv_management.driver import driver
+from venv_management.errors import ImplementationNotFound
+from venv_management.utilities import _sub_shell_command, _getstatusoutput
+
 logger = logging.getLogger(__file__)
-
-
-def _sub_shell_command(command, suppress_setup_output=True):
-    """Build a command to run a given command in an interactive subshell.
-
-    Args:
-        command: The command for the subshell.
-        suppress_setup_output: Suppress output from the environment setup command if True,
-            (the default), otherwise capture it.
-
-    Returns:
-        A string which can be used with the subprocess module.
-
-    Raises:
-        ValueError: If the subshell command could not be determined.
-    """
-    preferred_shell_name = os.environ.get("SHELL", "bash")
-    logger.debug("preferred_shell_name from $SHELL = %r", preferred_shell_name)
-    shell_name = expandvars(os.environ.get("VENV_MANAGEMENT_SHELL", preferred_shell_name))
-    logger.debug("shell_name = %r", shell_name)
-    shell_filepath = which(shell_name)
-    logger.debug("shell_filepath = %r", shell_filepath)
-    if shell_filepath is None:
-        raise RuntimeError(f"Could not determine the path to {shell_name}")
-    shell_filepath = Path(shell_filepath)
-    shell_filename = shell_filepath.name
-    logger.debug("shell_filename = %r", shell_filename)
-    rc_filename = f".{shell_filename}rc"
-    logger.debug("rc_filename = %r", rc_filename)
-    rc_filepath = Path.home() / rc_filename
-    logger.debug("rc_filepath = %r", rc_filepath)
-    interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
-    logger.debug("interactive = %s", interactive)
-    commands = []
-    use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
-    setup_filepath_str = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))
-    setup_filepath = Path(expanduser(expandvars(setup_filepath_str)))
-    if use_setup:
-        redirection = " 1>/dev/null 2>&1" if suppress_setup_output else ""
-        commands.append(f". {setup_filepath}{redirection}")
-    if command:
-        commands.append(command)
-
-    logger.debug("setup_filepath = %s", setup_filepath)
-    args = [
-        str(shell_filepath),
-        "-c",  # Run command
-        *(["-i"] if interactive else []),
-        " && ".join(commands),
-    ]
-    return args
 
 
 def check_environment() -> Tuple[int, str]:
@@ -84,16 +34,11 @@ def has_virtualenvwrapper():
         otherwise False.
     """
     try:
-        lsvirtualenv()
-    except RuntimeError:
+        driver()
+    except ImplementationNotFound:
         return False
     return True
 
-
-lsvirtualenv_commands = [
-    "lsvirtualenv -b",
-    "lsvirtualenvs -b",
-]
 
 def list_virtual_envs() -> List[str]:
     """A list of virtualenv names.
@@ -102,74 +47,9 @@ def list_virtual_envs() -> List[str]:
         A list of string names in case-sensitive alphanumeric order.
 
     Raises:
-        FileNotFoundError: If virtualenvwrapper.sh could not be located.
+        ImplementationNotFound: If no virtualenvwrapper implementation could be found.
     """
-    # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
-    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
-    success_statuses = {0, 1}
-    failed_commands = []
-    failed_outputs = []
-    for lsvirtualenv_command in list(lsvirtualenv_commands):
-        command = _sub_shell_command(lsvirtualenv_command)
-        logger.debug(command)
-        status, output = _getstatusoutput(command, success_statuses=success_statuses)
-        if status in success_statuses:
-            break
-        failed_commands.append(lsvirtualenv_command)
-        failed_outputs.append(output)
-    else:  # no-break
-        for failed_command in failed_commands:
-            lsvirtualenv_commands.remove(failed_command)
-        failure_messages = ["Could not list virtual environments any of the attempted commands"]
-        failure_messages.extend(
-            f"{failed_command} :\n{failed_output}"
-            for failed_command, failed_output in zip(failed_commands, failed_outputs)
-        )
-        for failure_message in failure_messages:
-            logger.error(failure_message)
-        raise RuntimeError("\n\n".join(failure_messages))
-    return output.splitlines(keepends=False)
-
-
-def _getstatusoutput(cmd: list[str], success_statuses=None):
-    """    Return (status, output) of executing cmd in a shell.
-
-    Args:
-        cmd: A list of command arguments to be executed.
-        success_statuses: A container of integer status codes which indicate success.
-
-    Execute the string 'cmd' in a shell with 'check_output' and
-    return a 2-tuple (status, output). Universal newlines mode is used,
-    meaning that the result with be decoded to a string.
-
-    A trailing newline is stripped from the output.
-    The exit status for the command can be interpreted
-    according to the rules for the function 'wait'.
-    """
-    if success_statuses is None:
-        success_statuses = {0}
-    logger.debug("command = %r", cmd)
-    process = subprocess.run(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        encoding=sys.getdefaultencoding()
-    )
-    status = process.returncode
-    stderr = process.stderr
-    stdout = process.stdout
-    if status in success_statuses:
-        data = stdout
-        if data[-1:] == '\n':
-            data = data[:-1]
-    else:
-        data = (f"STATUS: {status} ; \n"
-                f"STDOUT: {stdout} ; \n"
-                f"STDERR: {stderr}"
-        )
-    logger.debug("status = %d", status)
-    logger.debug("data = %s", data)
-    return status, data
+    return driver().list_virtual_envs()
 
 
 DESTINATION_PATTERN = r"dest=([^,]+)"
