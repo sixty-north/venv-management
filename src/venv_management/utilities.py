@@ -1,12 +1,14 @@
 import os
 import subprocess
 import sys
+import logging
 from distutils.util import strtobool
 from os.path import expandvars, expanduser
 from pathlib import Path
 from shutil import which
 
-from venv_management.tools import logger
+
+logger = logging.getLogger(__name__)
 
 
 def _sub_shell_command(command, suppress_setup_output=True):
