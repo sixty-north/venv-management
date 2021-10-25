@@ -265,7 +265,7 @@ def remove_virtual_env(name: str):
         ValueError: If there is no environment with the given name.
         RuntimeError: If the virtualenv could not be removed.
     """
-    return driver().remove_virtual_envs(name)
+    return driver().remove_virtual_env(name)
 
 
 def discard_virtual_env(name):
