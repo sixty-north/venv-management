@@ -15,10 +15,26 @@ class Driver(Extension):
 
     def __init__(self, name):
         super().__init__(name)
+        self._check_availability()
 
-    @staticmethod
     @abstractmethod
-    def list_virtual_envs() -> list[str]:
+    def _check_availability(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def list_virtual_envs(self) -> list[str]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove_virtual_env(self, name):
+        """Remove a virtual environment.
+
+        Args:
+            name: The name of the virtual environment to be removed.
+
+        Raises:
+            ValueError: If the name is empty.
+        """
         raise NotImplementedError
 
 

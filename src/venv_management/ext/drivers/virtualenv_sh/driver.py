@@ -8,17 +8,14 @@ logger = logging.getLogger(__name__)
 
 class VirtualEnvShDriver(Driver):
 
-    def __init__(self, name):
-        super().__init__(name)
-        # TODO: Check that virtualenv-sh is available
+    def _check_availability(self):
         try:
             self.list_virtual_envs()
         except CommandNotFound:
-            raise ImplementationNotFound(f"No implementation for {name}")
+            raise ImplementationNotFound(f"No implementation for {self.name}")
 
 
-    @staticmethod
-    def list_virtual_envs() -> list[str]:
+    def list_virtual_envs(self) -> list[str]:
         """A list of virtualenv names.
 
         Returns:
@@ -39,3 +36,16 @@ class VirtualEnvShDriver(Driver):
         if status == 127:
             raise CommandNotFound(output)
         raise RuntimeError(output)
+
+    def remove_virtual_env(self, name):
+        if not name:
+            raise ValueError("The name passed to remove_virtual_env cannot be empty")
+        command = _sub_shell_command(f"rmvirtualenv {name}")
+        logger.debug("command = %r", command)
+        status, output = _getstatusoutput(command)
+        if status == 0:
+            return
+        logger.debug(output)
+        if status == 127:
+            raise CommandNotFound(output)
+        raise ValueError(output)
