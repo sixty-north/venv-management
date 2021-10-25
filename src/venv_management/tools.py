@@ -265,25 +265,7 @@ def remove_virtual_env(name: str):
         ValueError: If there is no environment with the given name.
         RuntimeError: If the virtualenv could not be removed.
     """
-    if not name:
-        # When provided with an empty string, rmvirtualenv removes all virtual environments (!)
-        # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/346/rmvirtualenv-removes-all-virtualenvs
-        raise ValueError("No name provided to remove_virtual_env")
-    command = _sub_shell_command(f"rmvirtualenv {name}")
-    logger.info(command)
-
-    logger.debug("command = %r", command)
-    process = subprocess.run(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        encoding=sys.getdefaultencoding()
-    )
-    # rmvirtualenv returns success (0) even when it fails.
-    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
-    stderr = process.stderr
-    if len(stderr) != 0:
-        raise ValueError(stderr)
+    return driver().remove_virtual_envs(name)
 
 
 def discard_virtual_env(name):
