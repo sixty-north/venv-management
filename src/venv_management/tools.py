@@ -235,7 +235,7 @@ def remove_virtual_env(name: str):
     return driver().remove_virtual_env(name)
 
 
-def discard_virtual_env(name):
+def discard_virtual_env(name: str):
     """Discard a virtual environment.
 
     Args:
