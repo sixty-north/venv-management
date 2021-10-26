@@ -4,7 +4,7 @@ name: CI
 on:
   push:
     tags: ["release/v*"]
-    branches: ["master", "backends"]
+    branches: ["master"]
   pull_request:
     branches: ["master"]
   workflow_dispatch:
