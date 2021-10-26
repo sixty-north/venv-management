@@ -99,7 +99,7 @@ def make_virtual_env(
     Raises:
         RuntimeError: If the virtualenv could not be created.
     """
-    driver().make_virtual_env(
+    return driver().make_virtual_env(
         name,
         python=python,
         project_path=project_path,
