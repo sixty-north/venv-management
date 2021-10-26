@@ -2,6 +2,7 @@ import logging
 import re
 import subprocess
 import sys
+from os.path import expanduser
 from pathlib import Path
 
 from venv_management.driver import Driver
@@ -166,3 +167,14 @@ class VirtualEnvWrapperDriver(Driver):
         stderr = process.stderr
         if len(stderr) != 0:
             raise ValueError(stderr)
+
+    def resolve_virtual_env(self, name: str) -> Path:
+        if not name:
+            raise ValueError("The name passed to resolve_virtual_env cannot be empty")
+        if name not in self.list_virtual_envs():
+            raise ValueError(f"No virtual environment called {name!r} to remove")
+        command = _sub_shell_command("echo ${WORKON_HOME}")
+        logger.debug("command = %r", command)
+        status, output = _getstatusoutput(command)
+        workon_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / ".virtualenvs"
+        return workon_home / name

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from pathlib import Path
 
 from venv_management.errors import ImplementationNotFound
 from venv_management.extension import Extension, ExtensionError, create_extension, list_extensions
@@ -78,7 +79,7 @@ class Driver(Extension):
         raise NotImplementedError
 
     @abstractmethod
-    def remove_virtual_env(self, name):
+    def remove_virtual_env(self, name: str):
         """Remove a virtual environment.
 
         Args:
@@ -86,6 +87,21 @@ class Driver(Extension):
 
         Raises:
             ValueError: If the name is empty.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def resolve_virtual_env(self, name: str) -> Path:
+        """Obtain a path the the a virtual environment directory.
+
+        Args:
+            name: The name of the virtual environment.
+
+        Returns:
+            The path of the named virtual environment.
+
+        Raises:
+            ValueError: If there is no virtual environment with the supplied name.
         """
         raise NotImplementedError
 

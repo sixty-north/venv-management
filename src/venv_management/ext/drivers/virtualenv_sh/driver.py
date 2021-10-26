@@ -1,6 +1,7 @@
 import logging
 import re
 from pathlib import Path
+from os.path import expanduser
 
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
@@ -151,3 +152,14 @@ class VirtualEnvShDriver(Driver):
         logger.debug(output)
         if status == 127:
             raise CommandNotFound(output)
+
+    def resolve_virtual_env(self, name: str) -> Path:
+        if not name:
+            raise ValueError("The name passed to resolve_virtual_env cannot be empty")
+        if name not in self.list_virtual_envs():
+            raise ValueError(f"No virtual environment called {name!r} to remove")
+        command = _sub_shell_command("echo ${WORKON_HOME}")
+        logger.debug("command = %r", command)
+        status, output = _getstatusoutput(command)
+        workon_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / ".virtualenvs"
+        return workon_home / name

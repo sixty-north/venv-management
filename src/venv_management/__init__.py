@@ -6,7 +6,6 @@ from .tools import (
     list_virtual_envs,
     make_virtual_env,
     resolve_virtual_env,
-    virtual_envs_dirpath,
     virtual_env,
     ensure_virtual_env,
     remove_virtual_env,
@@ -14,9 +13,6 @@ from .tools import (
     python_executable_path,
     python_name,
     python_version,
-    lsvirtualenv,
-    mkvirtualenv,
-    rmvirtualenv,
 )
 
 __all__ = [
@@ -25,7 +21,6 @@ __all__ = [
     "list_virtual_envs",
     "make_virtual_env",
     "resolve_virtual_env",
-    "virtual_envs_dirpath",
     "virtual_env",
     "ensure_virtual_env",
     "remove_virtual_env",
@@ -33,7 +28,4 @@ __all__ = [
     "python_executable_path",
     "python_name",
     "python_version",
-    "lsvirtualenv",
-    "mkvirtualenv",
-    "rmvirtualenv",
 ]

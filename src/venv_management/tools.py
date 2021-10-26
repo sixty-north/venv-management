@@ -125,18 +125,7 @@ def resolve_virtual_env(name):
         ValueError: If the virtual environment name is not known.
         RuntimeError: If the path could not be determined.
     """
-    if name not in list_virtual_envs():
-        raise ValueError(f"Unknown virtual environment {name!r}")
-    return virtual_envs_dirpath() / name
-
-
-def virtual_envs_dirpath():
-    """The directory in which new virtual environments are created.
-
-    Returns:
-        A path object.
-    """
-    return Path(os.path.expanduser(os.environ.get("WORKON_HOME", "~/.virtualenvs")))
+    return driver().resolve_virtual_env(name)
 
 
 @contextmanager
@@ -243,7 +232,10 @@ def discard_virtual_env(name: str):
 
     Raises:
         RuntimeError: If the virtualenv could not be removed.
+        ValueError: If the name is empty.
     """
+    if not name:
+        raise ValueError("The name passed to remove_virtual_env cannot be empty")
     try:
         remove_virtual_env(name)
     except ValueError:
@@ -316,10 +308,3 @@ def _parse_package_arg(name, arg):
     else:
         option = f"--{name}={arg}"
     return option
-
-
-# Aliases for the main functions with the same name as the
-# virtualenvwrapper shell commands
-lsvirtualenv = list_virtual_envs
-mkvirtualenv = make_virtual_env
-rmvirtualenv = remove_virtual_env
