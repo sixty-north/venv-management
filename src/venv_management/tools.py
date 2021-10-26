@@ -52,10 +52,6 @@ def list_virtual_envs() -> List[str]:
     return driver().list_virtual_envs()
 
 
-DESTINATION_PATTERN = r"dest=([^,]+)"
-DESTINATION_REGEX = re.compile(DESTINATION_PATTERN)
-
-
 def make_virtual_env(
     name,
     *,
@@ -73,6 +69,9 @@ def make_virtual_env(
     Args:
         name: The name of the virtual environment.
 
+        python: The target interpreter for which to create a virtual environment, either
+            the name of the executable, or full path.
+
         project_path: An optional path to a project which will be associated with the
             new virtual environment.
 
@@ -80,20 +79,17 @@ def make_virtual_env(
 
         requirements_file: An optional path to a requirements file to be installed.
 
-        python: The target interpreter for which to create a virtual environment, either
-            the name of the executable, or full path.
-
         system_site_packages: If True, give access to the system site packages.
 
         pip: If True, or 'latest' the latest pip will be installed. If False, pip will not
             be installed. If 'bundled', the bundled version will be installed. If a specific
             version string is given, that version will be installed.
 
-        setuptools: If True, or 'latest' the latest pip will be installed. If False, pip will not
-            be installed. If 'bundled', the bundled version will be installed. If a specific
+        setuptools: If True, or 'latest' the latest pip will be installed. If False, setuptools will
+            not be installed. If 'bundled', the bundled version will be installed. If a specific
             version string is given, that version will be installed.
 
-        wheel: If True, or 'latest' the latest pip will be installed. If False, pip will not
+        wheel: If True, or 'latest' the latest pip will be installed. If False, wheel will not
             be installed. If 'bundled', the bundled version will be installed. If a specific
             version string is given, that version will be installed.
 
@@ -103,46 +99,17 @@ def make_virtual_env(
     Raises:
         RuntimeError: If the virtualenv could not be created.
     """
-    project_path_arg = f"-a {project_path}" if project_path else ""
-    packages_args = [f"-i {package}" for package in packages] if packages else []
-    requirements_arg = f"-r{requirements_file}" if requirements_file else ""
-    python_arg = f"--python={python}" if python else ""
-    system_site_packages_arg = "--system-site-packages" if system_site_packages else ""
-    pip_arg = _parse_package_arg("pip", pip)
-    setuptools_arg = _parse_package_arg("setuptools", setuptools)
-    wheel_arg = _parse_package_arg("wheel", wheel)
-
-    args = " ".join(
-        (
-            project_path_arg,
-            *packages_args,
-            requirements_arg,
-            python_arg,
-            system_site_packages_arg,
-            pip_arg,
-            setuptools_arg,
-            wheel_arg,
-        )
+    driver().make_virtual_env(
+        name,
+        python=python,
+        project_path=project_path,
+        packages=packages,
+        requirements_file=requirements_file,
+        system_site_packages=system_site_packages,
+        pip=pip,
+        setuptools=setuptools,
+        wheel=wheel
     )
-
-    command = _sub_shell_command(f"mkvirtualenv {name} {args}")
-    logger.info(command)
-    # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
-    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
-    success_statuses = {0, 1}
-    status, output = _getstatusoutput(command, success_statuses=success_statuses)
-    if status not in success_statuses:
-        raise RuntimeError(f"Could not run {command}")
-    lines = output.splitlines(keepends=False)
-    for line in lines:
-        logger.debug("line = %s", line)
-        m = DESTINATION_REGEX.search(line)
-        if m is not None:
-            dest = m.group(1)
-            logger.debug("Found dest = %s", dest)
-            return Path(dest)
-    logger.warning("Could not find dest for virtualenv %r", name)
-    return None
 
 
 def resolve_virtual_env(name):

@@ -26,6 +26,58 @@ class Driver(Extension):
         raise NotImplementedError
 
     @abstractmethod
+    def make_virtual_env(
+            self,
+            name,
+            *,
+            python=None,
+            project_path=None,
+            packages=None,
+            requirements_file=None,
+            system_site_packages=False,
+            pip=True,
+            setuptools=True,
+            wheel=True,
+    ):
+        """Make a virtual env.
+
+        Args:
+            name: The name of the virtual environment.
+
+            project_path: An optional path to a project which will be associated with the
+                new virtual environment.
+
+            packages: An optional sequence of package names for packages to be installed.
+
+            requirements_file: An optional path to a requirements file to be installed.
+
+            python: The target interpreter for which to create a virtual environment, either
+                the name of the executable, or full path.
+
+            system_site_packages: If True, give access to the system site packages.
+
+            pip: If True, or 'latest' the latest pip will be installed. If False, pip will not
+                be installed. If 'bundled', the bundled version will be installed. If a specific
+                version string is given, that version will be installed.
+
+            setuptools: If True, or 'latest' the latest pip will be installed. If False, pip will not
+                be installed. If 'bundled', the bundled version will be installed. If a specific
+                version string is given, that version will be installed.
+
+            wheel: If True, or 'latest' the latest pip will be installed. If False, pip will not
+                be installed. If 'bundled', the bundled version will be installed. If a specific
+                version string is given, that version will be installed.
+
+        Returns:
+            The Path to the root of the virtualenv, or None if the path could not be determined.
+
+        Raises:
+            CommandNotFound: If the the required command could not be found.
+            RuntimeError: If the virtualenv could not be created.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def remove_virtual_env(self, name):
         """Remove a virtual environment.
 
