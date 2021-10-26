@@ -139,12 +139,15 @@ class VirtualEnvShDriver(Driver):
     def remove_virtual_env(self, name):
         if not name:
             raise ValueError("The name passed to remove_virtual_env cannot be empty")
+        if name not in self.list_virtual_envs():
+            raise ValueError(f"No virtual environment called {name!r} to remove")
         command = _sub_shell_command(f"rmvirtualenv {name}")
         logger.debug("command = %r", command)
         status, output = _getstatusoutput(command)
         if status == 0:
+            if name in self.list_virtual_envs():
+                raise RuntimeError(f"Failed to remove virtual environment {name!r}")
             return
         logger.debug(output)
         if status == 127:
             raise CommandNotFound(output)
-        raise ValueError(output)
