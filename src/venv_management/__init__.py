@@ -1,6 +1,6 @@
 
 from .version import __version__, __version_info__
-from .tools import (
+from .api import (
     check_environment,
     has_virtualenvwrapper,
     list_virtual_envs,
