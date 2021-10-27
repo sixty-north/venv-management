@@ -5,6 +5,7 @@ Documentation
    :maxdepth: 2
    :caption: Contents:
 
+   installation
    configuration
    api/venv_management
 

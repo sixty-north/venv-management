@@ -20,12 +20,16 @@ Possibly in future we will also support:
   * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
   * `pew <https://pypi.org/project/pew/>`_
 
+.. inclusion-begin-installation-marker-do-not-remove
+
 Installation
 ------------
 
 Install from PyPI using ``pip``::
 
   $ pip install venv-management
+
+.. inclusion-end-installation-marker-do-not-remove
 
 
 Synopsis
@@ -47,6 +51,8 @@ interrogate, and destroy virtual environments::
 
 Refer to the documentation to see all available functions.
 
+.. inclusion-begin-configuration-marker-do-not-remove
+
 Shell selection
 ---------------
 
@@ -62,7 +68,6 @@ variable with a shell executable name or the path to a shell executable, for exa
 If neither ``$SHELL`` nor ``$VENV_MANAGEMENT_SHELL`` are set, an attempt to use ``bash`` will be
 made.
 
-.. inclusion-begin-configuration-marker-do-not-remove
 
 Shell configuration
 -------------------
@@ -78,29 +83,28 @@ the selected shell can only be usefully sourced in an interactive shell, set
   export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
 
 Should you wish to specify a different file for shell configuration, provide its path in the
-``VENV_MANAGEMENT_SETUP_FILEPATH`` environment variable. For example, since ``.bashrc`` returns
+``VENV_MANAGEMENT_SETUP_FILEPATH`` environment variable. For example, since ``.bashrc`` may return
 immediately in non-interactive shells, and only login shells source ``.profile`` on start-up,
-you may want to set up both ``pyenv`` and ``virtualenvwrapper`` in a separate file, in this example
+you may want to set up virtualenvwrapper or an equivalent in in a separate file, in this example
 called ``.venvwraprc``::
 
-  export PYENV_ROOT=$HOME/.pyenv
-  export PATH=$PYENV_ROOT/bin:$PATH
-  eval "$(pyenv init -)"
-  eval "$(pyenv init --path)"
-  pyenv virtualenvwrapper
+  # .venvwraprc
+  source /usr/local/bin/virtualenvwrapper.sh
 
+and then source this file in turn from, say, ``.bashrc``.
 
-If the ``VENV_MANAGEMENT_USE_SETUP`` is set to ``yes``, the script whose filepath is specified in the
-``VENV_MANAGEMENT_SETUP_FILEPATH`` variable will be sourced before every command provided by this package::
+If the ``VENV_MANAGEMENT_USE_SETUP`` variable is set to ``yes``, the script whose filepath is
+specified in the ``VENV_MANAGEMENT_SETUP_FILEPATH`` variable will be as necessary before executing
+the commands run by this package::
 
   export VENV_MANAGEMENT_USE_SETUP=yes
   export VENV_MANAGEMENT_SETUP_FILEPATH=$HOME/.venvwraprc
-
 
 You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or ``.`` command,
 so that ``virtualenvwrapper`` could be used in interactive shells.
 
 .. inclusion-end-configuration-marker-do-not-remove
+
 
 Release process
 ===============
