@@ -11,7 +11,7 @@ from typing import List, Tuple
 
 from venv_management.driver import driver
 from venv_management.errors import ImplementationNotFound
-from venv_management.utilities import _sub_shell_command, _getstatusoutput
+from venv_management.utilities import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__file__)
 
@@ -22,8 +22,8 @@ def check_environment() -> Tuple[int, str]:
     Returns: A 2-tuple containing the status output of the setup command, and text output
 
     """
-    command = _sub_shell_command("", suppress_setup_output=False)
-    return _getstatusoutput(command)
+    command = sub_shell_command("", suppress_setup_output=False)
+    return get_status_output(command)
 
 
 def has_virtualenvwrapper():

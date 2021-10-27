@@ -4,7 +4,7 @@ import sys
 
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
-from venv_management.utilities import _sub_shell_command, _getstatusoutput
+from venv_management.utilities import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__name__)
 

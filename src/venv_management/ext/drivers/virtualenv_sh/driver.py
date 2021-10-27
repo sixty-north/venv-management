@@ -6,7 +6,7 @@ from os.path import expanduser
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
 from venv_management.tools import _parse_package_arg
-from venv_management.utilities import _sub_shell_command, _getstatusoutput
+from venv_management.utilities import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__name__)
 
@@ -35,9 +35,9 @@ class VirtualEnvShDriver(Driver):
         # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
         # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
         lsvirtualenv_command = "lsvirtualenvs -b"
-        command = _sub_shell_command(lsvirtualenv_command)
+        command = sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
-        status, output = _getstatusoutput(command)
+        status, output = get_status_output(command)
         if status == 0:
             return output.splitlines(keepends=False)
         logger.debug(output)
@@ -116,11 +116,11 @@ class VirtualEnvShDriver(Driver):
             )
         )
 
-        command = _sub_shell_command(f"mkvirtualenv {name} {args}")
+        command = sub_shell_command(f"mkvirtualenv {name} {args}")
         logger.info(command)
         # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
         # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
-        status, output = _getstatusoutput(command)
+        status, output = get_status_output(command)
         if status == 127:
             raise CommandNotFound(output)
         if status != 0:
@@ -142,9 +142,9 @@ class VirtualEnvShDriver(Driver):
             raise ValueError("The name passed to remove_virtual_env cannot be empty")
         if name not in self.list_virtual_envs():
             raise ValueError(f"No virtual environment called {name!r} to remove")
-        command = _sub_shell_command(f"rmvirtualenv {name}")
+        command = sub_shell_command(f"rmvirtualenv {name}")
         logger.debug("command = %r", command)
-        status, output = _getstatusoutput(command)
+        status, output = get_status_output(command)
         if status == 0:
             if name in self.list_virtual_envs():
                 raise RuntimeError(f"Failed to remove virtual environment {name!r}")
@@ -158,8 +158,8 @@ class VirtualEnvShDriver(Driver):
             raise ValueError("The name passed to resolve_virtual_env cannot be empty")
         if name not in self.list_virtual_envs():
             raise ValueError(f"No virtual environment called {name!r} to remove")
-        command = _sub_shell_command("echo ${WORKON_HOME}")
+        command = sub_shell_command("echo ${WORKON_HOME}")
         logger.debug("command = %r", command)
-        status, output = _getstatusoutput(command)
+        status, output = get_status_output(command)
         workon_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / ".virtualenvs"
         return workon_home / name

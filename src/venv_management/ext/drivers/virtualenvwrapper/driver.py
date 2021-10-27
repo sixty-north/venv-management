@@ -8,7 +8,8 @@ from pathlib import Path
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
 from venv_management.tools import _parse_package_arg
-from venv_management.utilities import _sub_shell_command, _getstatusoutput
+from venv_management.utilities import sub_shell_command, get_status_output, shell_is_interactive, \
+    remove_interactive_shell_warnings
 
 logger = logging.getLogger(__name__)
 
@@ -38,10 +39,10 @@ class VirtualEnvWrapperDriver(Driver):
         # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
         # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
         lsvirtualenv_command = "lsvirtualenv -b"
-        command = _sub_shell_command(lsvirtualenv_command)
+        command = sub_shell_command(lsvirtualenv_command)
         logger.debug(command)
         success_statuses = {0, 1}
-        status, output = _getstatusoutput(command, success_statuses=success_statuses)
+        status, output = get_status_output(command, success_statuses=success_statuses)
         if status in success_statuses:
             return output.splitlines(keepends=False)
         logger.error(output)
@@ -119,12 +120,12 @@ class VirtualEnvWrapperDriver(Driver):
             )
         )
 
-        command = _sub_shell_command(f"mkvirtualenv {name} {args}")
+        command = sub_shell_command(f"mkvirtualenv {name} {args}")
         logger.info(command)
         # Accommodate the fact that virtualenvwrapper is not disciplined about success/failure exit codes
         # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
         success_statuses = {0, 1}
-        status, output = _getstatusoutput(command, success_statuses=success_statuses)
+        status, output = get_status_output(command, success_statuses=success_statuses)
         if status not in success_statuses:
             raise RuntimeError(f"Could not run {command}")
         lines = output.splitlines(keepends=False)
@@ -153,7 +154,7 @@ class VirtualEnvWrapperDriver(Driver):
             # When provided with an empty string, rmvirtualenv removes all virtual environments (!)
             # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/346/rmvirtualenv-removes-all-virtualenvs
             raise ValueError("The name passed to remove_virtual_env cannot be empty")
-        command = _sub_shell_command(f"rmvirtualenv {name}")
+        command = sub_shell_command(f"rmvirtualenv {name}")
         logger.debug("command = %r", command)
         process = subprocess.run(
             command,
@@ -165,6 +166,8 @@ class VirtualEnvWrapperDriver(Driver):
         # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/issues/283/some-commands-give-non-zero-exit-codes
         # but it does return a message on stderr
         stderr = process.stderr
+        if shell_is_interactive():
+            stderr = remove_interactive_shell_warnings(stderr)
         if len(stderr) != 0:
             raise ValueError(stderr)
 
@@ -173,8 +176,8 @@ class VirtualEnvWrapperDriver(Driver):
             raise ValueError("The name passed to resolve_virtual_env cannot be empty")
         if name not in self.list_virtual_envs():
             raise ValueError(f"No virtual environment called {name!r} to remove")
-        command = _sub_shell_command("echo ${WORKON_HOME}")
+        command = sub_shell_command("echo ${WORKON_HOME}")
         logger.debug("command = %r", command)
-        status, output = _getstatusoutput(command)
+        status, output = get_status_output(command)
         workon_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / ".virtualenvs"
         return workon_home / name

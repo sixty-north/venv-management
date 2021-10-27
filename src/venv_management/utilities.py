@@ -11,7 +11,7 @@ from shutil import which
 logger = logging.getLogger(__name__)
 
 
-def _sub_shell_command(command, suppress_setup_output=True):
+def sub_shell_command(command, suppress_setup_output=True):
     """Build a command to run a given command in an interactive subshell.
 
     Args:
@@ -40,7 +40,7 @@ def _sub_shell_command(command, suppress_setup_output=True):
     logger.debug("rc_filename = %r", rc_filename)
     rc_filepath = Path.home() / rc_filename
     logger.debug("rc_filepath = %r", rc_filepath)
-    interactive = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
+    interactive = shell_is_interactive()
     logger.debug("interactive = %s", interactive)
     commands = []
     use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
@@ -62,7 +62,11 @@ def _sub_shell_command(command, suppress_setup_output=True):
     return args
 
 
-def _getstatusoutput(cmd: list[str], success_statuses=None):
+def shell_is_interactive():
+    return strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
+
+
+def get_status_output(cmd: list[str], success_statuses=None):
     """    Return (status, output) of executing cmd in a shell.
 
     Args:
@@ -101,3 +105,18 @@ def _getstatusoutput(cmd: list[str], success_statuses=None):
     logger.debug("status = %d", status)
     logger.debug("data = %s", data)
     return status, data
+
+
+def has_interactive_warning(line):
+    return (
+            "cannot set terminal process group" in line
+            or "Inappropriate ioctl for device" in line
+            or "no job control in this shell" in line
+    )
+
+
+def remove_interactive_shell_warnings(stderr):
+    lines = stderr.splitlines(keepends=True)
+    lines = [line for line in lines if not has_interactive_warning(line)]
+    stderr = "".join(lines)
+    return stderr
