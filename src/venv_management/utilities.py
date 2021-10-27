@@ -120,3 +120,20 @@ def remove_interactive_shell_warnings(stderr):
     lines = [line for line in lines if not has_interactive_warning(line)]
     stderr = "".join(lines)
     return stderr
+
+
+def compatible_versions(actual_version, expected_version):
+    return all(
+        actual == expected
+        for actual, expected in zip(actual_version.split("."), expected_version.split("."))
+    )
+
+
+def parse_package_arg(name, arg):
+    if arg == True:
+        option = ""
+    elif arg == False:
+        option = f"--no-{name}"
+    else:
+        option = f"--{name}={arg}"
+    return option

@@ -1,17 +1,14 @@
 """Functions for wrapping virtualenv wrapper.
 """
-import os
-import re
 import subprocess
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from venv_management.driver import driver
 from venv_management.errors import ImplementationNotFound
-from venv_management.utilities import sub_shell_command, get_status_output
+from venv_management.utilities import sub_shell_command, get_status_output, compatible_versions
 
 logger = logging.getLogger(__file__)
 
@@ -189,7 +186,7 @@ def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs):
         # An environment with the right name exists. Does it have the right version?
         actual_version = python_version(env_dirpath)
         if (expected_version is not None) and (
-            not _compatible_versions(actual_version, expected_version)
+            not compatible_versions(actual_version, expected_version)
         ):
             message = (
                 f"Virtual environment at {env_dirpath} has actual version {actual_version}, "
@@ -202,13 +199,6 @@ def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs):
             else:
                 raise RuntimeError(message)
     return env_dirpath
-
-
-def _compatible_versions(actual_version, expected_version):
-    return all(
-        actual == expected
-        for actual, expected in zip(actual_version.split("."), expected_version.split("."))
-    )
 
 
 def remove_virtual_env(name: str):
@@ -242,7 +232,7 @@ def discard_virtual_env(name: str):
         pass
 
 
-def python_executable_path(env_dirpath):
+def python_executable_path(env_dirpath: Union[Path, str]) -> Path:
     """Find the Python executable for a virtual environment.
 
     Args:
@@ -263,7 +253,7 @@ def python_executable_path(env_dirpath):
     return exe_filepath
 
 
-def python_name(env_dirpath):
+def python_name(env_dirpath: Union[Path, str]) -> str:
     """Find the name of the Python in a virtual environment.
 
     Args:
@@ -283,7 +273,7 @@ def python_name(env_dirpath):
     return output.splitlines(keepends=False)[0]
 
 
-def python_version(env_dirpath):
+def python_version(env_dirpath: Union[Path, str]) -> str:
     """Find the version of the Python in virtual environment.
 
     Args:
@@ -298,13 +288,3 @@ def python_version(env_dirpath):
     name = python_name(env_dirpath)
     version = name.split()[-1]
     return version
-
-
-def _parse_package_arg(name, arg):
-    if arg == True:
-        option = ""
-    elif arg == False:
-        option = f"--no-{name}"
-    else:
-        option = f"--{name}={arg}"
-    return option

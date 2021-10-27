@@ -7,9 +7,8 @@ from pathlib import Path
 
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
-from venv_management.tools import _parse_package_arg
 from venv_management.utilities import sub_shell_command, get_status_output, shell_is_interactive, \
-    remove_interactive_shell_warnings
+    remove_interactive_shell_warnings, parse_package_arg
 
 logger = logging.getLogger(__name__)
 
@@ -103,9 +102,9 @@ class VirtualEnvWrapperDriver(Driver):
         requirements_arg = f"-r{requirements_file}" if requirements_file else ""
         python_arg = f"--python={python}" if python else ""
         system_site_packages_arg = "--system-site-packages" if system_site_packages else ""
-        pip_arg = _parse_package_arg("pip", pip)
-        setuptools_arg = _parse_package_arg("setuptools", setuptools)
-        wheel_arg = _parse_package_arg("wheel", wheel)
+        pip_arg = parse_package_arg("pip", pip)
+        setuptools_arg = parse_package_arg("setuptools", setuptools)
+        wheel_arg = parse_package_arg("wheel", wheel)
 
         args = " ".join(
             (
