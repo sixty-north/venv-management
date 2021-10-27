@@ -1,3 +1,6 @@
+"""The virtualenvwrapper driver interface and factories.
+"""
+
 from abc import abstractmethod
 from pathlib import Path
 
@@ -10,20 +13,41 @@ DRIVER_NAMESPACE = f"venv_management.{KIND}"
 
 
 class Driver(Extension):
+    """Defines the interface for a virtualenvwrapper-equivalent driver."""
 
     def _kind(self):
         return KIND
 
     def __init__(self, name):
+        """
+        Args:
+            name: The name of the driver.
+
+        Raises:
+            ImplementationNotFound: If the the virtualenvwrapper implementation corresponding
+             to the concrete driver type is not available.
+        """
         super().__init__(name)
         self._check_availability()
 
     @abstractmethod
     def _check_availability(self):
+        """Check that the particular virtualenvwrapper implementation required is available.
+
+        Implementations of this method should either succeed or raise ImplementationNotFound.
+
+        Raises:
+            ImplementationNotFound: If the implementation is not available.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def list_virtual_envs(self) -> list[str]:
+        """The virtual environments available to this package.
+
+        Returns:
+            A list of virtual environment names which can be manipulated by this package.
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -107,7 +131,7 @@ class Driver(Extension):
 
 
 class DriverExtensionError(ExtensionError):
-    pass
+    """Indicates that an error specific to a driver extension occurred."""
 
 
 def create_driver(driver_name) -> Driver:
@@ -133,11 +157,24 @@ def create_driver(driver_name) -> Driver:
 
 
 def driver_names() -> list[Driver]:
+    """A list of available driver extensions.
+
+    There is no guarantee that the listed drivers are backed by functioning virtualenvwrapper
+    implementations.
+    """
     return list_extensions(DRIVER_NAMESPACE)
 
 _driver = None
 
-def driver():
+def driver() -> Driver:
+    """Obtain a Driver instance.
+
+    Returns:
+        A Driver corresponding to an available virtualenvwrapper implementation.
+
+    Raises:
+        ImplementationNotFound: If no suitable virtualenvwrapper installation was found
+    """
     global _driver
     if _driver is None:
         for driver_name in driver_names():

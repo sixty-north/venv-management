@@ -1,3 +1,6 @@
+"""Utility functions.
+"""
+
 import os
 import subprocess
 import sys
@@ -63,6 +66,14 @@ def sub_shell_command(command, suppress_setup_output=True):
 
 
 def shell_is_interactive():
+    """True if the shell has been set to interactive.
+
+    Control the setting with the VENV_MANAGEMENT_INTERACTIVE_SHELL environment variable by
+    setting it to 'yes' or 'no'.
+
+    Returns:
+        True if the shell is interactive, otherwise False.
+    """
     return strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
 
 
@@ -107,7 +118,20 @@ def get_status_output(cmd: list[str], success_statuses=None):
     return status, data
 
 
-def has_interactive_warning(line):
+def has_interactive_warning(line: str):
+    """Determine whether a line of text contains a warning emitted by a shell.
+
+    The shell program itself (e.g. bash) can emit warnings under certain circumstances
+    which clutter output; for example, when running a shell in interactive mode without
+    a connected terminal. This predicate can identify lines of text containing such
+    warnings.
+
+    Args:
+        line: A string which may contain a shell warning.
+
+    Returns:
+        True if the line contains a shell warning, otherwise False.
+    """
     return (
             "cannot set terminal process group" in line
             or "Inappropriate ioctl for device" in line
@@ -115,11 +139,24 @@ def has_interactive_warning(line):
     )
 
 
-def remove_interactive_shell_warnings(stderr):
-    lines = stderr.splitlines(keepends=True)
+def remove_interactive_shell_warnings(lines: str) -> str:
+    """Remove shell warnings from lines of text.
+
+    The shell program itself (e.g. bash) can emit warnings under certain circumstances
+    which clutter output; for example, when running a shell in interactive mode without
+    a connected terminal. This predicate can identify lines of text containing such
+    warnings.
+
+    Args:
+        lines: A string (possibly multiline) which may contain lines which have shell warnings.
+
+    Returns:
+        The argument string without any lines containing matching shell warnings.
+    """
+    lines = lines.splitlines(keepends=True)
     lines = [line for line in lines if not has_interactive_warning(line)]
-    stderr = "".join(lines)
-    return stderr
+    lines = "".join(lines)
+    return lines
 
 
 def compatible_versions(actual_version, expected_version):
@@ -130,6 +167,17 @@ def compatible_versions(actual_version, expected_version):
 
 
 def parse_package_arg(name, arg):
+    """Make a command-line argument string specifing whether and which verison of a package to install.
+
+    Args:
+        name: The name of the package.
+        arg: True if the package is required, False if the package is not required,
+            or a string containing a version number if a specific version of the package
+            is required.
+
+    Returns:
+        A string which can be used as an argument to the virtualenv command.
+    """
     if arg == True:
         option = ""
     elif arg == False:

@@ -1,7 +1,10 @@
+"""Exception classes.
+"""
+
 class CommandNotFound(Exception):
-    pass
+    """Raised when a shell command could not be found."""
 
 
 class ImplementationNotFound(Exception):
-    pass
+    "Raised when a Driver is not backed by a working virtualenvwrapper implementation."
 

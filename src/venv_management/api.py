@@ -1,5 +1,6 @@
-"""Functions for wrapping virtualenv wrapper.
+"""The public API.
 """
+
 import subprocess
 from contextlib import contextmanager
 from pathlib import Path
