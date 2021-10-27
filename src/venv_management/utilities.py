@@ -159,10 +159,23 @@ def remove_interactive_shell_warnings(lines: str) -> str:
     return lines
 
 
-def compatible_versions(actual_version, expected_version):
+def compatible_versions(actual_version: str, required_version: str) -> bool:
+    """Determine whether two versions are equal.
+
+    Only the dot separated elements in common are taken into account, so
+    actual "3.7.4" compared with "3.7" will return True.
+
+    Args:
+        actual_version: A dot separated version.
+        required_version: A dot separated version.
+
+    Returns:
+        True if the actual_version is compatible with the required_version,
+        otherwise False.
+    """
     return all(
         actual == expected
-        for actual, expected in zip(actual_version.split("."), expected_version.split("."))
+        for actual, expected in zip(actual_version.split("."), required_version.split("."))
     )
 
 
