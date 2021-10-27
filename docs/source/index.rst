@@ -5,6 +5,7 @@ Documentation
    :maxdepth: 2
    :caption: Contents:
 
+   configuration
    api/venv_management
 
 Indices and tables

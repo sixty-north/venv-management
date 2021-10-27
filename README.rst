@@ -2,14 +2,15 @@
 Venv Management
 ===============
 
-A Python package for programmatic creation of Python virtual environments
+A Python package for programmatic creation and management of Python virtual environments.
 
 
 Prerequisites
 =============
 
-A virtualenvwrapper installation must have been installed and be available in a login shell. The
-following virtualenvwrapper implementations have been tested:
+A virtualenvwrapper installation must have been installed and be available in a shell and configured
+at shell start-up in the appropriate ``rc`` file (*e.g.* ``.bashrc``, but the documentation for more
+details and options). The following virtualenvwrapper implementations have been tested:
 
   * `virtualenvwrapper <https://pypi.org/project/virtualenvwrapper/>`_
   * `virtualenv-sh <https://pypi.org/project/virtualenv-sh/>`_
@@ -19,14 +20,40 @@ Possibly in future we will also support:
   * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
   * `pew <https://pypi.org/project/pew/>`_
 
+Installation
+------------
+
+Install from PyPI using ``pip``::
+
+  $ pip install venv-management
+
+
+Synopsis
+--------
+
+Use the Python functions exported by the ``venv_management`` package to create, enumerate,
+interrogate, and destroy virtual environments::
+
+  >>> make_virtual_env("myenv")
+  >>> python_version(env_path)
+  '3.10.0'
+  >>> list_virtual_envs()
+  ['myenv']
+  >>> env_path = resolve_virtual_env("myenv")
+  >>> env_path
+  /home/user/.virtualenvs/myenv
+  >>> remove_virtual_env("myenv")
+  >>>
+
+Refer to the documentation to see all available functions.
 
 Shell selection
 ---------------
 
-This ``venv-management`` package delegates most operations to one of the ``virtualenvwrapper`` tools
-listed above which are implemented using shell scripts and shell functions. In order to invoke these
-scripts and functions successfully the shell environment mush have been correctly configured. By
-default ``venv-management`` attempts to use the current user's preferred shell by examining the
+This ``venv-management`` package delegates most operations to one of the ``virtualenvwrapper`` or
+equivalent tools, which are implemented using shell scripts and shell functions. In order to invoke
+these scripts and functions successfully the shell environment mush have been correctly configured.
+By default ``venv-management`` attempts to use the current user's preferred shell by examining the
 ``$SHELL`` environment variable. This can be overridden by setting the ``$VENV_MANAGEMENT_SHELL``
 variable with a shell executable name or the path to a shell executable, for example::
 
@@ -35,6 +62,8 @@ variable with a shell executable name or the path to a shell executable, for exa
 If neither ``$SHELL`` nor ``$VENV_MANAGEMENT_SHELL`` are set, an attempt to use ``bash`` will be
 made.
 
+.. inclusion-begin-configuration-marker-do-not-remove
+
 Shell configuration
 -------------------
 
@@ -42,7 +71,7 @@ The selected shell must be configured to make the ``virtualenvwrapper`` commands
 default, ``venv-management`` will source the ``rc`` file corresponding to the selected shell, for
 example ``.bashrc`` for ``bash``, ``.zshrc`` for ``zsh``, and so on, on the basis that
 ``virtualenvwrapper`` initialization is often performed from these files. If the ``rc`` file for
-the selected shell can only be usefully sources in an interactive shell, set
+the selected shell can only be usefully sourced in an interactive shell, set
 ``VENV_MANAGEMENT_INTERACTIVE_SHELL`` to ``yes``::
 
 
@@ -71,9 +100,11 @@ If the ``VENV_MANAGEMENT_USE_SETUP`` is set to ``yes``, the script whose filepat
 You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or ``.`` command,
 so that ``virtualenvwrapper`` could be used in interactive shells.
 
+.. inclusion-end-configuration-marker-do-not-remove
 
-Manual release
-==============
+Release process
+===============
+
 
 Upgrade the version::
 
