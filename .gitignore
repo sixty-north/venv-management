@@ -16,3 +16,7 @@ site
 
 # User-specific stuff:
 .idea/
+
+# Generated API docs
+docs/source/api
+docs/build/
