@@ -33,7 +33,7 @@ jobs:
           python -m pytest tests
 
   test-with-virtualenvwrapper-interactive:
-    name: "Pytest with virtualenvwrapper"
+    name: "Pytest with virtualenvwrapper interactive"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
@@ -77,7 +77,7 @@ jobs:
           python -m pytest tests
 
   test-with-virtualenvwrapper-and-venvwraprc-interactive:
-    name: "Pytest with virtualenvwrapper and .venvwraprc"
+    name: "Pytest with virtualenvwrapper and .venvwraprc interactive"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
