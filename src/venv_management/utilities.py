@@ -9,7 +9,7 @@ from distutils.util import strtobool
 from os.path import expandvars, expanduser
 from pathlib import Path
 from shutil import which
-
+from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
