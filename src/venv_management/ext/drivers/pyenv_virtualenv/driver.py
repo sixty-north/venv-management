@@ -1,10 +1,9 @@
 import logging
-import subprocess
-import sys
+from pathlib import Path
+from typing import List
 
 from venv_management.driver import Driver
-from venv_management.errors import CommandNotFound, ImplementationNotFound
-from venv_management.utilities import sub_shell_command, get_status_output
+from venv_management.errors import ImplementationNotFound
 
 logger = logging.getLogger(__name__)
 
@@ -89,4 +88,7 @@ class PyEnvVirtualEnvDriver(Driver):
             ValueError: If there is no environment with the given name.
             RuntimeError: If the virtualenv could not be removed.
         """
+        raise NotImplementedError
+
+    def resolve_virtual_env(self, name: str) -> Path:
         raise NotImplementedError
