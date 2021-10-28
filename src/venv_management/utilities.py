@@ -77,7 +77,7 @@ def shell_is_interactive():
     return strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
 
 
-def get_status_output(cmd: list[str], success_statuses=None):
+def get_status_output(cmd: List[str], success_statuses=None) -> Tuple[int, str]:
     """    Return (status, output) of executing cmd in a shell.
 
     Args:
