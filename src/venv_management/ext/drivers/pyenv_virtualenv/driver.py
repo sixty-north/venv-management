@@ -17,7 +17,7 @@ class PyEnvVirtualEnvDriver(Driver):
 
 
 
-    def list_virtual_envs(self) -> list[str]:
+    def list_virtual_envs(self) -> List[str]:
         """A list of virtualenv names.
 
         Returns:

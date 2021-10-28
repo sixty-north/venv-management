@@ -3,6 +3,7 @@
 
 from abc import abstractmethod
 from pathlib import Path
+from typing import List
 
 from venv_management.errors import ImplementationNotFound
 from venv_management.extension import Extension, ExtensionError, create_extension, list_extensions
@@ -42,7 +43,7 @@ class Driver(Extension):
         raise NotImplementedError
 
     @abstractmethod
-    def list_virtual_envs(self) -> list[str]:
+    def list_virtual_envs(self) -> List[str]:
         """The virtual environments available to this package.
 
         Returns:

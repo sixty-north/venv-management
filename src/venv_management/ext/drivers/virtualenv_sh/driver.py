@@ -2,6 +2,7 @@ import logging
 import re
 from pathlib import Path
 from os.path import expanduser
+from typing import List
 
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound
@@ -22,7 +23,7 @@ class VirtualEnvShDriver(Driver):
             raise ImplementationNotFound(f"No implementation for {self.name}")
 
 
-    def list_virtual_envs(self) -> list[str]:
+    def list_virtual_envs(self) -> List[str]:
         """A list of virtualenv names.
 
         Returns:
