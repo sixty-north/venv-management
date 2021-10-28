@@ -14,6 +14,9 @@ A Python package for programmatic creation and management of Python virtual envi
     :alt: Documentation Status
 
 
+This document gives an overview. For more detail see the `documentation <https://venv-management.readthedocs.io/en/latest/?badge=latest>`_.
+
+
 Prerequisites
 =============
 
