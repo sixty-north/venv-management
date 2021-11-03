@@ -32,6 +32,10 @@ def sub_shell_command(command, suppress_setup_output=True):
     logger.debug("preferred_shell_name from $SHELL = %r", preferred_shell_name)
     shell_name = expandvars(os.environ.get("VENV_MANAGEMENT_SHELL", preferred_shell_name))
     logger.debug("shell_name = %r", shell_name)
+    if "fish" in shell_name:
+        logger.error("Support for fish not yet added")
+        raise NotImplementedError("Support for fish not yet added")
+        
     shell_filepath = which(shell_name)
     logger.debug("shell_filepath = %r", shell_filepath)
     if shell_filepath is None:
