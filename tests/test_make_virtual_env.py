@@ -11,3 +11,13 @@ def test_make_virtual_envs_with_one_env():
     finally:
         discard_virtual_env(name)
     assert name in envs
+
+
+def test_make_virtual_env_with_non_existent_python():
+    name = "venv-management-{}".format(uuid.uuid4())
+    make_virtual_env(name, python="python2.13")
+    try:
+        envs = list_virtual_envs()
+    finally:
+        discard_virtual_env(name)
+    assert name in envs
