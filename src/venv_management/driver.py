@@ -98,7 +98,8 @@ class Driver(Extension):
             The Path to the root of the virtualenv, or None if the path could not be determined.
 
         Raises:
-            CommandNotFound: If the the required command could not be found.
+            PythonNotFound: If the requested Python version could not be found.
+            CommandNotFound: If the required command could not be found.
             RuntimeError: If the virtualenv could not be created.
         """
         raise NotImplementedError

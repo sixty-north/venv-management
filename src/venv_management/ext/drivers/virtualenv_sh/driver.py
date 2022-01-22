@@ -5,7 +5,7 @@ from os.path import expanduser
 from typing import List
 
 from venv_management.driver import Driver
-from venv_management.errors import CommandNotFound, ImplementationNotFound
+from venv_management.errors import CommandNotFound, ImplementationNotFound, PythonNotFound
 from venv_management.utilities import sub_shell_command, get_status_output, parse_package_arg
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 DESTINATION_PATTERN = r"dest=([^,]+)"
 DESTINATION_REGEX = re.compile(DESTINATION_PATTERN)
+
+NO_SUCH_PYTHON_PATTERN = r"failed to find interpreter for Builtin discover of python_spec='([^']*)'"
+NO_SUCH_PYTHON_REGEX = re.compile(NO_SUCH_PYTHON_PATTERN)
 
 class VirtualEnvShDriver(Driver):
 
@@ -91,7 +94,8 @@ class VirtualEnvShDriver(Driver):
             The Path to the root of the virtualenv, or None if the path could not be determined.
 
         Raises:
-            CommandNotFound: If the the required command could not be found.
+            PythonNotFound: If the requested Python version could not be found.
+            CommandNotFound: If the required command could not be found.
             RuntimeError: If the virtualenv could not be created.
         """
         project_path_arg = f"-a {project_path}" if project_path else ""
@@ -125,6 +129,9 @@ class VirtualEnvShDriver(Driver):
             raise CommandNotFound(output)
         if status != 0:
             raise RuntimeError(f"Could not run {command}")
+        m = NO_SUCH_PYTHON_REGEX.search(output)
+        if m is not None:
+            raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
         lines = output.splitlines(keepends=False)
         for line in lines:
             logger.debug("line = %s", line)
