@@ -15,6 +15,12 @@ from .api import (
     python_version,
 )
 
+from .errors import (
+    ImplementationNotFound,
+    CommandNotFound,
+    PythonNotFound,
+)
+
 __all__ = [
     "check_environment",
     "has_virtualenvwrapper",
@@ -28,4 +34,7 @@ __all__ = [
     "python_executable_path",
     "python_name",
     "python_version",
+    "ImplementationNotFound",
+    "CommandNotFound",
+    "PythonNotFound",
 ]
