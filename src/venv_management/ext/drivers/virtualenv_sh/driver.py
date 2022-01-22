@@ -127,11 +127,11 @@ class VirtualEnvShDriver(Driver):
         status, output = get_status_output(command)
         if status == 127:
             raise CommandNotFound(output)
-        if status != 0:
-            raise RuntimeError(f"Could not run {command}")
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
             raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
+        if status != 0:
+            raise RuntimeError(f"Could not run {command}")
         lines = output.splitlines(keepends=False)
         for line in lines:
             logger.debug("line = %s", line)
