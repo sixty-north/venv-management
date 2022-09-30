@@ -5,7 +5,6 @@ import os
 import subprocess
 import sys
 import logging
-from distutils.util import strtobool
 from os.path import expandvars, expanduser
 from pathlib import Path
 from shutil import which
@@ -35,7 +34,7 @@ def sub_shell_command(command, suppress_setup_output=True):
     if "fish" in shell_name:
         logger.error("Support for fish not yet added")
         raise NotImplementedError("Support for fish not yet added")
-        
+
     shell_filepath = which(shell_name)
     logger.debug("shell_filepath = %r", shell_filepath)
     if shell_filepath is None:
@@ -50,7 +49,7 @@ def sub_shell_command(command, suppress_setup_output=True):
     interactive = shell_is_interactive()
     logger.debug("interactive = %s", interactive)
     commands = []
-    use_setup = strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
+    use_setup = str_to_bool(expandvars(os.environ.get("VENV_MANAGEMENT_USE_SETUP", "yes")))
     setup_filepath_str = os.environ.get("VENV_MANAGEMENT_SETUP_FILEPATH", str(rc_filepath))
     setup_filepath = Path(expanduser(expandvars(setup_filepath_str)))
     if use_setup:
@@ -78,7 +77,7 @@ def shell_is_interactive():
     Returns:
         True if the shell is interactive, otherwise False.
     """
-    return strtobool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
+    return str_to_bool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
 
 
 def get_status_output(cmd: List[str], success_statuses=None) -> Tuple[int, str]:
@@ -202,3 +201,20 @@ def parse_package_arg(name, arg):
     else:
         option = f"--{name}={arg}"
     return option
+
+
+def str_to_bool (val):
+    """Convert a string representation of truth to true (1) or false (0).
+
+    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
+    are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
+    'val' is anything else.
+    """
+    # Note this implementation was copied and renamed from the now deprecated distutils.util.strtobool
+    val = val.lower()
+    if val in ('y', 'yes', 't', 'true', 'on', '1'):
+        return 1
+    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+        return 0
+    else:
+        raise ValueError("invalid truth value %r" % (val,))
