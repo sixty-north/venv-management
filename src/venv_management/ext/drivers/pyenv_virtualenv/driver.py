@@ -1,20 +1,34 @@
 import logging
+import re
+import subprocess
+import sys
+from os.path import expanduser
 from pathlib import Path
 from typing import List
 
 from venv_management.driver import Driver
-from venv_management.errors import ImplementationNotFound
+from venv_management.errors import ImplementationNotFound, CommandNotFound, PythonNotFound
+from venv_management.utilities import sub_shell_command, get_status_output, parse_package_arg, shell_is_interactive, \
+    remove_interactive_shell_warnings
 
 logger = logging.getLogger(__name__)
 
+
+# A part of the error message when an invalid Python version is specified in the command line
+NO_SUCH_PYTHON_PATTERN = r"It does not look like a valid Python version"
+NO_SUCH_PYTHON_REGEX = re.compile(NO_SUCH_PYTHON_PATTERN)
+
+DESTINATION_PATTERN = r"dest=([^,]+)"
+DESTINATION_REGEX = re.compile(DESTINATION_PATTERN)
+
+
 class PyEnvVirtualEnvDriver(Driver):
 
-
     def _check_availability(self):
-        # TODO: Not yet implemented
-        raise ImplementationNotFound(f"No implementation for {self.name}")
-
-
+        try:
+            self.list_virtual_envs()
+        except CommandNotFound:
+            raise ImplementationNotFound(f"No implementation for {self.name}")
 
     def list_virtual_envs(self) -> List[str]:
         """A list of virtualenv names.
@@ -25,7 +39,17 @@ class PyEnvVirtualEnvDriver(Driver):
         Raises:
             FileNotFoundError: If virtualenvwrapper.sh could not be located.
         """
-        raise NotImplementedError
+        list_virtual_envs_command = "pyenv virtualenvs"
+        command = sub_shell_command(list_virtual_envs_command)
+        logger.debug(f"Running command: {command}")
+        success_statuses = {0, 1}
+        status, output = get_status_output(command, success_statuses=success_statuses)
+        if status in success_statuses:
+            return output.splitlines(keepends=False)
+        logger.error(output)
+        if status == 127:
+            raise CommandNotFound(output)
+        raise RuntimeError(output)
 
     def make_virtual_env(
             self,
@@ -46,11 +70,13 @@ class PyEnvVirtualEnvDriver(Driver):
             name: The name of the virtual environment.
 
             project_path: An optional path to a project which will be associated with the
-                new virtual environment.
+                new virtual environment. (not supported by pyenv-virtualenv)
 
             packages: An optional sequence of package names for packages to be installed.
+                 (not supported by pyenv-virtualenv)
 
             requirements_file: An optional path to a requirements file to be installed.
+                (not supported by pyenv-virtualenv)
 
             python: The target interpreter for which to create a virtual environment, either
                 the name of the executable, or full path.
@@ -61,9 +87,10 @@ class PyEnvVirtualEnvDriver(Driver):
                 be installed. If 'bundled', the bundled version will be installed. If a specific
                 version string is given, that version will be installed.
 
-            setuptools: If True, or 'latest' the latest pip will be installed. If False, pip will not
-                be installed. If 'bundled', the bundled version will be installed. If a specific
-                version string is given, that version will be installed.
+            setuptools: If True, or 'latest' the latest setuptools will be installed.
+                If False, setuptools will not be installed.
+                If 'bundled', the bundled version will be installed.
+                If a specific version string is given, that version will be installed.
 
             wheel: If True, or 'latest' the latest pip will be installed. If False, pip will not
                 be installed. If 'bundled', the bundled version will be installed. If a specific
@@ -73,10 +100,44 @@ class PyEnvVirtualEnvDriver(Driver):
             The Path to the root of the virtualenv, or None if the path could not be determined.
 
         Raises:
-            CommandNotFound: If the the required command could not be found.
+            CommandNotFound: If the required command could not be found.
             RuntimeError: If the virtualenv could not be created.
         """
-        raise NotImplementedError
+        python_arg = f"--python={python}" if python else ""
+        system_site_packages_arg = "--system-site-packages" if system_site_packages else ""
+        pip_arg = parse_package_arg("pip", pip)
+        setuptools_arg = parse_package_arg("setuptools", setuptools)
+        wheel_arg = parse_package_arg("wheel", wheel)
+
+        args = " ".join(
+            (
+                python_arg,
+                system_site_packages_arg,
+                pip_arg,
+                setuptools_arg,
+                wheel_arg,
+            )
+        )
+
+        command = sub_shell_command(f"pyenv virtualenv {args} {name}")
+        logger.info(command)
+        status, output = get_status_output(command)
+        if status != 0:
+            raise RuntimeError(f"Could not run {command}")
+        m = NO_SUCH_PYTHON_REGEX.search(output)
+        if m is not None:
+            raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
+        lines = output.splitlines(keepends=False)
+        for line in lines:
+            logger.debug("line = %s", line)
+            m = DESTINATION_REGEX.search(line)
+            if m is not None:
+                dest = m.group(1)
+                logger.debug("Found dest = %s", dest)
+                return Path(dest)
+        message = "Could not find dest for virtualenv {name!r}"
+        logger.warning(message)
+        raise RuntimeError(message)
 
     def remove_virtual_env(self, name):
         """Remove a virtual environment.
@@ -88,7 +149,21 @@ class PyEnvVirtualEnvDriver(Driver):
             ValueError: If there is no environment with the given name.
             RuntimeError: If the virtualenv could not be removed.
         """
-        raise NotImplementedError
+        if not name:
+            raise ValueError("The name passed to remove_virtual_env cannot be empty")
+        command = sub_shell_command(f"pyenv uninstall {name}")
+        logger.debug("command = %r", command)
+        process = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            encoding=sys.getdefaultencoding()
+        )
+        stderr = process.stderr
+        if shell_is_interactive():
+            stderr = remove_interactive_shell_warnings(stderr)
+        if len(stderr) != 0:
+            raise ValueError(stderr)
 
     def resolve_virtual_env(self, name: str) -> Path:
         raise NotImplementedError
