@@ -165,4 +165,21 @@ class PyEnvVirtualEnvDriver(Driver):
             raise ValueError(stderr)
 
     def resolve_virtual_env(self, name: str) -> Path:
-        raise NotImplementedError
+        """Resolve the path to a virtual environment.
+
+        Args:
+            name: The name of the virtual environment.
+
+        Returns:
+            The path to the virtual environment in the following format:
+             $HOME/.pyenv/versions/<python_version>/envs/<virtual_env_name>
+        """
+        if not name:
+            raise ValueError("The name passed to resolve_virtual_env cannot be empty")
+        if name not in self.list_virtual_envs():
+            raise ValueError(f"No virtual environment called {name!r} is found.")
+        command = sub_shell_command("pyenv prefix")  # produces $HOME/.pyenv/versions/<python_version>
+        logger.debug("command = %r", command)
+        status, output = get_status_output(command)
+        virtual_envs_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / "envs"
+        return virtual_envs_home / name
