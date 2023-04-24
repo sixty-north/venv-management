@@ -150,7 +150,7 @@ class PyEnvVirtualEnvDriver(Driver):
         """
         if not name:
             raise ValueError("The name passed to remove_virtual_env cannot be empty")
-        command = sub_shell_command(f"pyenv uninstall {name}")
+        command = sub_shell_command(f"pyenv uninstall -f {name}")
         logger.debug("command = %r", command)
         process = subprocess.run(
             command,
