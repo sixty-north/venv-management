@@ -39,12 +39,11 @@ class PyEnvVirtualEnvDriver(Driver):
         Raises:
             FileNotFoundError: If virtualenvwrapper.sh could not be located.
         """
-        list_virtual_envs_command = "pyenv virtualenvs"
+        list_virtual_envs_command = "pyenv virtualenvs --bare"
         command = sub_shell_command(list_virtual_envs_command)
         logger.debug(f"Running command: {command}")
-        success_statuses = {0, 1}
-        status, output = get_status_output(command, success_statuses=success_statuses)
-        if status in success_statuses:
+        status, output = get_status_output(command)
+        if status == 0:
             return output.splitlines(keepends=False)
         logger.error(output)
         if status == 127:
