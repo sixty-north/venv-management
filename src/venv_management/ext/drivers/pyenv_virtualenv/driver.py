@@ -118,27 +118,36 @@ class PyEnvVirtualEnvDriver(Driver):
             )
         )
 
-        command = sub_shell_command(f"pyenv virtualenv {args} {name}")
-        logger.info(command)
-        status, output = get_status_output(command)
+        # Create
+        create_command = sub_shell_command(f"pyenv virtualenv {args} {name}")
+        logger.info(create_command)
+        status, output = get_status_output(create_command)
         if status != 0:
-            raise RuntimeError(f"Could not run {command}")
+            raise RuntimeError(f"Could not run {create_command}")
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
             raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
 
-        activate_command = sub_shell_command(f"pyenv activate {name}")
-        s, o = get_status_output(activate_command)
-        if s != 0:
+        # Get current Python version
+        python_version_command = sub_shell_command("pyenv version-name")
+        status, output = get_status_output(python_version_command)
+        if status != 0:
+            raise RuntimeError(f"Could not run {python_version_command}")
+        python_version = output.strip()
+
+        # Activate
+        activate_command = sub_shell_command(f"pyenv activate {python_version}/envs/{name}")
+        status, output = get_status_output(activate_command)
+        if status != 0:
             raise RuntimeError(f"Could not activate virtual environment: {name}")
 
+        # Get the path to the virtual environment root
         get_path_command = sub_shell_command("pyenv prefix")
-        st, out = get_status_output(get_path_command)
-        if st != 0:
+        status, output = get_status_output(get_path_command)
+        if status != 0:
             raise RuntimeError(f"Could not get path for virtual environment: {name}")
-
-        if out:
-            return Path(out)
+        if output:
+            return Path(output) / "envs" / name
 
         raise RuntimeError(f"Could not get path for virtual environment: {name}")
 
@@ -185,5 +194,6 @@ class PyEnvVirtualEnvDriver(Driver):
         command = sub_shell_command("pyenv prefix")  # produces $HOME/.pyenv/versions/<python_version>
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
-        virtual_envs_home = Path(expanduser(output)) if len(output) > 0 else Path.home() / "envs"
+        breakpoint()
+        virtual_envs_home = (Path(expanduser(output)) if len(output) > 0 else Path.home()) / "envs"
         return virtual_envs_home / name
