@@ -136,7 +136,7 @@ class PyEnvVirtualEnvDriver(Driver):
         python_version = output.strip()
 
         # Activate
-        activate_command = sub_shell_command(f"pyenv activate {python_version}/envs/{name}")
+        activate_command = sub_shell_command(f"pyenv activate {name}")
         status, output = get_status_output(activate_command)
         if status != 0:
             raise RuntimeError(f"Could not activate virtual environment: {name}")
@@ -147,7 +147,7 @@ class PyEnvVirtualEnvDriver(Driver):
         if status != 0:
             raise RuntimeError(f"Could not get path for virtual environment: {name}")
         if output:
-            return Path(output) / "envs" / name
+            return Path(output)
 
         raise RuntimeError(f"Could not get path for virtual environment: {name}")
 
