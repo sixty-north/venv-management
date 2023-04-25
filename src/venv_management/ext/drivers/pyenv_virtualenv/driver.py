@@ -194,6 +194,5 @@ class PyEnvVirtualEnvDriver(Driver):
         command = sub_shell_command("pyenv prefix")  # produces $HOME/.pyenv/versions/<python_version>
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
-        breakpoint()
         virtual_envs_home = (Path(expanduser(output)) if len(output) > 0 else Path.home()) / "envs"
         return virtual_envs_home / name
