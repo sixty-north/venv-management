@@ -126,17 +126,21 @@ class PyEnvVirtualEnvDriver(Driver):
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
             raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
-        lines = output.splitlines(keepends=False)
-        for line in lines:
-            logger.debug("line = %s", line)
-            m = DESTINATION_REGEX.search(line)
-            if m is not None:
-                dest = m.group(1)
-                logger.debug("Found dest = %s", dest)
-                return Path(dest)
-        message = "Could not find dest for virtualenv {name!r}"
-        logger.warning(message)
-        raise RuntimeError(message)
+
+        activate_command = sub_shell_command(f"pyenv activate {name}")
+        s, o = get_status_output(activate_command)
+        if s != 0:
+            raise RuntimeError(f"Could not activate virtual environment: {name}")
+
+        get_path_command = sub_shell_command("pyenv prefix")
+        st, out = get_status_output(get_path_command)
+        if st != 0:
+            raise RuntimeError(f"Could not get path for virtual environment: {name}")
+
+        if out:
+            return Path(out)
+
+        raise RuntimeError(f"Could not get path for virtual environment: {name}")
 
     def remove_virtual_env(self, name):
         """Remove a virtual environment.
