@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 # A part of the error message when an invalid Python version is specified in the command line
-NO_SUCH_PYTHON_PATTERN = r"It does not look like a valid Python version"
+NO_SUCH_PYTHON_PATTERN = r"is not installed in pyenv"
 NO_SUCH_PYTHON_REGEX = re.compile(NO_SUCH_PYTHON_PATTERN)
 
 DESTINATION_PATTERN = r"dest=([^,]+)"
@@ -195,5 +195,6 @@ class PyEnvVirtualEnvDriver(Driver):
         command = sub_shell_command("pyenv prefix")  # produces $HOME/.pyenv/versions/<python_version>
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
+        return output
         virtual_envs_home = (Path(expanduser(output)) if len(output) > 0 else Path.home()) / "envs"
         return virtual_envs_home / name
