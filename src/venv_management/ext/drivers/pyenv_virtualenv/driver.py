@@ -45,7 +45,9 @@ class PyEnvVirtualEnvDriver(Driver):
         if status == 0:
             return output.splitlines(keepends=False)
         logger.error(output)
-        if status == 127:
+        if status == 127:  # Pyenv is not installed
+            raise CommandNotFound(output)
+        if status == 1:  # The subcommand passed to Pyenv is not recognized
             raise CommandNotFound(output)
         raise RuntimeError(output)
 
