@@ -122,8 +122,6 @@ class PyEnvVirtualEnvDriver(Driver):
         create_command = sub_shell_command(f"pyenv virtualenv {args} {name}")
         logger.info(create_command)
         status, output = get_status_output(create_command)
-        if status != 0:
-            raise RuntimeError(f"Could not run {create_command}")
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
             raise PythonNotFound(f"Could not locate Python {python} ; {m.group(0)}")
