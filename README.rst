@@ -26,10 +26,10 @@ details and options). The following virtualenvwrapper implementations have been 
 
   * `virtualenvwrapper <https://pypi.org/project/virtualenvwrapper/>`_
   * `virtualenv-sh <https://pypi.org/project/virtualenv-sh/>`_
+  * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
 
 Possibly in future we will also support:
 
-  * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
   * `pew <https://pypi.org/project/pew/>`_
 
 .. inclusion-begin-installation-marker-do-not-remove
