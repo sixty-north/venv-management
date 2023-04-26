@@ -2,7 +2,6 @@ import logging
 import re
 import subprocess
 import sys
-from os.path import expanduser
 from pathlib import Path
 from typing import List
 
@@ -185,16 +184,13 @@ class PyEnvVirtualEnvDriver(Driver):
             name: The name of the virtual environment.
 
         Returns:
-            The path to the virtual environment in the following format:
-             $HOME/.pyenv/versions/<python_version>/envs/<virtual_env_name>
+            The path to the virtual environment in the $HOME/.pyenv/versions/<virtual_env_name> format.
         """
         if not name:
             raise ValueError("The name passed to resolve_virtual_env cannot be empty")
         if name not in self.list_virtual_envs():
             raise ValueError(f"No virtual environment called {name!r} is found.")
-        command = sub_shell_command("pyenv prefix")  # produces $HOME/.pyenv/versions/<python_version>
+        command = sub_shell_command("pyenv prefix")
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
-        return output
-        virtual_envs_home = (Path(expanduser(output)) if len(output) > 0 else Path.home()) / "envs"
-        return virtual_envs_home / name
+        return Path(output)
