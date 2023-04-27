@@ -141,7 +141,7 @@ class PyEnvVirtualEnvDriver(Driver):
             raise RuntimeError(f"Could not activate virtual environment: {name}")
 
         # Get the path to the virtual environment root
-        get_path_command = sub_shell_command("pyenv prefix")
+        get_path_command = sub_shell_command(f"pyenv prefix {name}")
         status, output = get_status_output(get_path_command)
         if status != 0:
             raise RuntimeError(f"Could not get path for virtual environment: {name}")
@@ -192,7 +192,7 @@ class PyEnvVirtualEnvDriver(Driver):
             raise ValueError("The name passed to resolve_virtual_env cannot be empty")
         if name not in self.list_virtual_envs():
             raise ValueError(f"No virtual environment called {name!r} is found.")
-        command = sub_shell_command("pyenv prefix")
+        command = sub_shell_command(f"pyenv prefix {name}")
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
         return Path(output)
