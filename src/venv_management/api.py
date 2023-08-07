@@ -24,6 +24,7 @@ def check_environment() -> Tuple[int, str]:
     return get_status_output(command)
 
 
+# TODO: Use a more generic name for this function
 def has_virtualenvwrapper():
     """Determine whether virtualenvwrapper available and working.
 

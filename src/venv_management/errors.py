@@ -6,7 +6,7 @@ class CommandNotFound(Exception):
 
 
 class ImplementationNotFound(Exception):
-    "Raised when a Driver is not backed by a working virtualenvwrapper implementation."
+    "Raised when a virtual environment driver is not backed by a working implementation."
 
 
 class PythonNotFound(Exception):

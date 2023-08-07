@@ -188,5 +188,8 @@ def driver() -> Driver:
                 _driver = d
                 break
         else:  # no-break
-            raise ImplementationNotFound("No suitable virtualenvwrapper installation found")
+            raise ImplementationNotFound(
+                f"No virtualenv driver backed by a working implementation was found. "
+                f"Tried: {', '.join(map(repr, driver_names()))}."
+            )
     return _driver
