@@ -50,6 +50,8 @@ jobs:
           python -m pip install --user virtualenv-sh
           echo '. ${HOME}/.local/bin/virtualenv-sh.bash' >> ${HOME}/.bashrc
           echo 'WORKON_HOME=${HOME}/.virtualenvs' >> ${HOME}/.bashrc
+          pwd
+          ls
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
