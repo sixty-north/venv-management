@@ -14,16 +14,15 @@ jobs:
     name: "Pytest with pyenv virtualenv interactive"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v2
-      - name: "Set up Python"
-        uses: actions/setup-python@v2
+      - name: "Install pyenv"
+        uses: "gabrielfalcao/setup-pyenv@v16"
         with:
-          python-version: '3.9'
+          default: "3.9"
+      - name: "Try pyenv"
+        run: |
+          pyenv
       - name: "Install dependencies"
         run: |
-          curl https://pyenv.run | bash
-          source ${HOME}/.bashrc
-          pyenv
           python -m pip install --user --upgrade pip
           python -m pip install .[test]
       - name: "Run Pytest"
