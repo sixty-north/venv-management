@@ -190,8 +190,12 @@ class PyEnvVirtualEnvDriver(Driver):
         """
         if not name:
             raise ValueError("The name passed to resolve_virtual_env cannot be empty")
-        if name not in self.list_virtual_envs():
-            raise ValueError(f"No virtual environment called {name!r} is found.")
+        names = self.list_virtual_envs()
+        if name not in names:
+            raise ValueError(
+                f"No virtual environment called {name!r} is found. "
+                f"Found {', '.join(map(repr, names))}'"
+            )
         command = sub_shell_command(f"pyenv prefix {name}")
         logger.debug("command = %r", command)
         status, output = get_status_output(command)
