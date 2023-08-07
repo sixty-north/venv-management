@@ -118,7 +118,7 @@ class Driver(Extension):
 
     @abstractmethod
     def resolve_virtual_env(self, name: str) -> Path:
-        """Obtain a path the the a virtual environment directory.
+        """Obtain a path to the virtual environment directory.
 
         Args:
             name: The name of the virtual environment.

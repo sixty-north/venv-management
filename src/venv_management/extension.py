@@ -64,7 +64,7 @@ class Extension(ABC):
     def name(self) -> str:
         """The name of the extension.
 
-        The is the same as the name used to create the extension.
+        The name used to create the extension.
         """
         return self._name
 
