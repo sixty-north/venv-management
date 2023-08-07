@@ -16,12 +16,11 @@ jobs:
     steps:
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v16"
-        with:
-          versions: 3.9.7
 
       - name: "Show available Python versions"
         run: |
           pyenv versions
+          pyenv shell system
 
       - name: "Install dependencies"
         run: |
