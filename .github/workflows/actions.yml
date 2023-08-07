@@ -26,6 +26,8 @@ jobs:
       - name: "Install dependencies"
         run: |
           python -m pip install --user --upgrade pip
+          pwd
+          ls
           python -m pip install --user .[test]
       - name: "Run Pytest"
         run: |
