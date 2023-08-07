@@ -21,6 +21,9 @@ jobs:
           python-version: '3.9'
       - name: "Install dependencies"
         run: |
+          curl https://pyenv.run | bash
+          source ${HOME}/.bashrc
+          pyenv
           python -m pip install --user --upgrade pip
           python -m pip install .[test]
       - name: "Run Pytest"
