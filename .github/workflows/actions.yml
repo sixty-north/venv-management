@@ -17,7 +17,9 @@ jobs:
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v16"
         with:
-          versions: "3.9.7"
+          default: 3.9.7
+          versions: 3.9.7
+
       - name: "Show available Python versions"
         run: |
           pyenv versions
