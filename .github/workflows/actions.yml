@@ -10,6 +10,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  test-with-pyenv-interactive:
+    name: "Pytest with pyenv virtualenv interactive"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up Python"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --user --upgrade pip
+          python -m pip install .[test]
+      - name: "Run Pytest"
+        run: |
+          export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
+          python -m pytest tests
+
   test-with-virtualenv-sh-interactive:
     name: "Pytest with virtualenv-sh"
     runs-on: "ubuntu-latest"
