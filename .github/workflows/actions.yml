@@ -16,11 +16,10 @@ jobs:
     steps:
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v16"
-        with:
-          default: system
 
       - name: "Show available Python versions"
         run: |
+          eval "$(pyenv init -)"
           pyenv versions
           pyenv shell system
 
