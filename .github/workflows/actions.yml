@@ -18,9 +18,9 @@ jobs:
         uses: "gabrielfalcao/pyenv-action@v16"
         with:
           default: "3.9"
-      - name: "Try pyenv"
+      - name: "Show available Python versions"
         run: |
-          pyenv
+          pyenv versions
       - name: "Install dependencies"
         run: |
           python -m pip install --user --upgrade pip
