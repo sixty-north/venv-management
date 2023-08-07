@@ -15,7 +15,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Install pyenv"
-        uses: "gabrielfalcao/setup-pyenv@v16"
+        uses: "gabrielfalcao/pyenv-action@v16"
         with:
           default: "3.9"
       - name: "Try pyenv"
