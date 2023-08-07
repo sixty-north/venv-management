@@ -289,3 +289,8 @@ def python_version(env_dirpath: Union[Path, str]) -> str:
     name = python_name(env_dirpath)
     version = name.split()[-1]
     return version
+
+
+def driver_name() -> str:
+    """Get the name of the driver."""
+    return driver().name
