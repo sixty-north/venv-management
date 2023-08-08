@@ -29,7 +29,6 @@ jobs:
           echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
           echo 'eval "$(pyenv init -)"' >> ~/.bashrc
           eval "$(pyenv init -)"
-          pyenv shell system
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
           sudo rm /usr/bin/conda
 
