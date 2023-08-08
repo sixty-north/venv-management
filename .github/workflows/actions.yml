@@ -11,7 +11,7 @@ on:
 
 jobs:
   test-with-conda:
-    name: "Pytest with conda interactive"
+    name: "Pytest with conda non-interactive"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout repo"
@@ -202,6 +202,7 @@ jobs:
   package:
     name: "Build Package Distributions"
     needs:
+      - test-with-conda
       - test-with-pyenv-interactive
       - test-with-pyenv-noninteractive
       - test-with-virtualenv-sh-interactive
