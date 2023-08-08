@@ -143,14 +143,14 @@ class CondaDriver(Driver):
         logger.info(create_command)
         status, output = get_status_output(create_command)
 
-        if status != 0:
-            raise RuntimeError(f"Could not create virtual environment: {name}")
-
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
             raise PythonNotFound(f"Could locate Python {python}")
-        # Get the path
 
+        if status != 0:
+            raise RuntimeError(f"Could not create virtual environment: {name}")
+
+        # Get the path
         ENVIRONMENT_LOCATION_REGEX = re.compile(r"environment location: (.*)\n")
         m = ENVIRONMENT_LOCATION_REGEX.search(output)
         if m is not None:
@@ -159,6 +159,7 @@ class CondaDriver(Driver):
             return Path(location)
 
         raise RuntimeError(f"Could not get path for virtual environment: {name}")
+
 
     def remove_virtual_env(self, name):
         """Remove a virtual environment.
