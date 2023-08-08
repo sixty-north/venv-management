@@ -23,6 +23,7 @@ jobs:
 
       - name: "Use conda"
         shell: bash -l {0}
+        run: |
           conda create -n testenv
           conda activate testenv
 
