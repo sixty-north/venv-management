@@ -18,13 +18,14 @@ jobs:
         uses: actions/checkout@v2
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v16"
+        with:
+            versions: 3.9.7
 
       - name: "Show available Python versions"
         run: |
           eval "$(pyenv init -)"
           pyenv versions
           pyenv shell system
-          conda env list
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 
       - name: "Install dependencies"
