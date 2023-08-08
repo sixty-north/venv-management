@@ -48,6 +48,8 @@ jobs:
           source ~/.bashrc
           which python3
           which python3-config
+          which conda
+          
 
       - name: "Install dependencies"
         run: |
