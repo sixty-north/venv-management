@@ -4,15 +4,15 @@ name: CI
 on:
   push:
     tags: ["release/v*"]
-    branches: ["master"]
+    branches: ["master", "macos-runner"]
   pull_request:
-    branches: ["master"]
+    branches: ["master", "macos-runner"]
   workflow_dispatch:
 
 jobs:
   test-with-virtualenv-sh-interactive:
     name: "Pytest with virtualenv-sh"
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v2
       - name: "Set up Python"
@@ -34,7 +34,7 @@ jobs:
 
   test-with-virtualenvwrapper-interactive:
     name: "Pytest with virtualenvwrapper interactive"
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v2
       - name: "Set up Python"
@@ -56,7 +56,7 @@ jobs:
 
   test-with-virtualenvwrapper-and-venvwraprc-noninterative:
     name: "Pytest with virtualenvwrapper and .venvwraprc"
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v2
       - name: "Set up Python"
@@ -78,7 +78,7 @@ jobs:
 
   test-with-virtualenvwrapper-and-venvwraprc-interactive:
     name: "Pytest with virtualenvwrapper and .venvwraprc interactive"
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v2
       - name: "Set up Python"
@@ -106,7 +106,7 @@ jobs:
       - test-with-virtualenvwrapper-interactive
       - test-with-virtualenvwrapper-and-venvwraprc-noninterative
       - test-with-virtualenvwrapper-and-venvwraprc-interactive
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
