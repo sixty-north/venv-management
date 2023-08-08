@@ -5,6 +5,7 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import List
 
+from venv_management.environment import preferred_drivers
 from venv_management.errors import ImplementationNotFound
 from venv_management.extension import Extension, ExtensionError, create_extension, list_extensions
 
@@ -180,7 +181,7 @@ def driver() -> Driver:
     global _driver
     if _driver is None:
         reasons = {}
-        for driver_name in driver_names():
+        for driver_name in preferred_drivers(driver_names()):
             try:
                 d = create_driver(driver_name)
             except ImplementationNotFound as e:

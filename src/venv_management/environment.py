@@ -1,4 +1,5 @@
 import os
+from itertools import chain
 from os.path import expandvars
 
 from venv_management.utilities import str_to_bool
@@ -27,3 +28,21 @@ def shell_is_interactive():
         True if the shell is interactive, otherwise False.
     """
     return str_to_bool(expandvars(os.environ.get("VENV_MANAGEMENT_INTERACTIVE_SHELL", "no")))
+
+
+def preferred_drivers(available_driver_names):
+    """The preferred drivers from optionally controlled by VENV_MANAGEMENT_PREFERRED_DRIVERS.
+
+    Args:
+        available_driver_names: A list of available driver names.
+
+    Returns:
+        A list of available driver names, with the preferred drivers first.
+    """
+    preferred_driver_names = expandvars(os.environ.get("VENV_MANAGEMENT_PREFERRED_DRIVERS", "")).split(",")
+    return list(
+        chain(
+            [driver_name for driver_name in preferred_driver_names if driver_name in available_driver_names],
+            [driver_name for driver_name in available_driver_names if driver_name not in preferred_driver_names],
+        )
+    )

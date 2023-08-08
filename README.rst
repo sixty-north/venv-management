@@ -115,6 +115,15 @@ the commands run by this package::
 You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or ``.`` command,
 so that ``virtualenvwrapper`` could be used in interactive shells.
 
+Driver preference
+-----------------
+
+If you have multiple virtualenv wrapper implementations installed, you can specify the order in
+which they will be tried with the ``VENV_MANAGEMENT_DRIVER_PREFERENCE`` environment variable. The
+first working implementation will be used::
+
+  export VENV_MANAGEMENT_DRIVER_PREFERENCE="virtualenvwrapper,virtualenv-sh"
+
 .. inclusion-end-configuration-marker-do-not-remove
 
 
