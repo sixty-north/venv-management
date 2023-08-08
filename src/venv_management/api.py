@@ -248,7 +248,12 @@ def python_executable_path(env_dirpath: Union[Path, str]) -> Path:
         ValueError: If the env_dirpath is not a virtual environment.
     """
     dirpath = Path(env_dirpath)
-    exe_filepath = dirpath / "bin" / "python"
+    logger.debug(f"Looking for Python executable in {dirpath}")
+    logger.debug(f"Contents: {list(dirpath.iterdir())}")
+    bin_dirpath = dirpath / "bin"
+    logger.debug(f"Looking for Python executable in {bin_dirpath}")
+    logger.debug(f"Contents: {list(bin_dirpath.iterdir())}")
+    exe_filepath = bin_dirpath / "python"
     if not exe_filepath.exists():
         raise ValueError(
             f"Could not locate Python executable for supposed virtual environment {env_dirpath}"
