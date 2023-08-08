@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 # A part of the error message when an invalid Python version is specified in the command line
-NO_SUCH_PYTHON_PATTERN = r"PackagesNotFoundError.*  - python=python\S+"
+NO_SUCH_PYTHON_PATTERN = r"PackagesNotFoundError"
 NO_SUCH_PYTHON_REGEX = re.compile(NO_SUCH_PYTHON_PATTERN)
 
 DESTINATION_PATTERN = r"dest=([^,]+)"
@@ -148,7 +148,7 @@ class CondaDriver(Driver):
 
         m = NO_SUCH_PYTHON_REGEX.search(output)
         if m is not None:
-            raise PythonNotFound(f"Could not locate Python {python}")
+            raise PythonNotFound(f"Could locate Python {python}")
         # Get the path
 
         ENVIRONMENT_LOCATION_REGEX = re.compile(r"environment location: (.*)\n")
