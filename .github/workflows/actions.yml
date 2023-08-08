@@ -21,7 +21,18 @@ jobs:
 
       - name: "Show available Python versions"
         run: |
+          echo ".bashrc follows >>>>"
+          cat ~/.bashrc
+          echo "Modifying .bashrc"
+          echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+          echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+          echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+          echo ".bashrc follows >>>>"
+          cat ~/.bashrc
+          echo $PYENV_ROOT
           eval "$(pyenv init -)"
+          echo $PYENV_ROOT
+          
           pyenv versions
           pyenv shell system
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
