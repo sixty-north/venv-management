@@ -9,7 +9,8 @@ from typing import List, Tuple, Union
 
 from venv_management.driver import driver
 from venv_management.errors import ImplementationNotFound
-from venv_management.utilities import sub_shell_command, get_status_output, compatible_versions
+from venv_management.utilities import compatible_versions
+from venv_management.shell import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__file__)
 

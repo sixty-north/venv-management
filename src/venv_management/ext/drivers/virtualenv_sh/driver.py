@@ -6,7 +6,8 @@ from typing import List
 
 from venv_management.driver import Driver
 from venv_management.errors import CommandNotFound, ImplementationNotFound, PythonNotFound
-from venv_management.utilities import sub_shell_command, get_status_output, parse_package_arg
+from venv_management.utilities import parse_package_arg
+from venv_management.shell import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__name__)
 

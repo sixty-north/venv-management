@@ -7,8 +7,12 @@ from typing import List
 
 from venv_management.driver import Driver
 from venv_management.errors import ImplementationNotFound, CommandNotFound, PythonNotFound
-from venv_management.utilities import sub_shell_command, get_status_output, parse_package_arg, shell_is_interactive, \
-    remove_interactive_shell_warnings
+from venv_management.utilities import parse_package_arg
+from venv_management.shell import (
+    sub_shell_command, get_status_output,
+    remove_interactive_shell_warnings,
+)
+from venv_management.environment import shell_is_interactive
 
 logger = logging.getLogger(__name__)
 
