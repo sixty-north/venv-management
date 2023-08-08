@@ -31,7 +31,7 @@ jobs:
         run: conda create -n testenv
       - name: Conda activate virtualenv
         shell: bash -el {0}
-        run: conda activate testenv
+        run: conda activate missing
 
 
   test-with-pyenv-interactive:
