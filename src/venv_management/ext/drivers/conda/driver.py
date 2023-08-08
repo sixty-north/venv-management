@@ -50,7 +50,17 @@ class CondaDriver(Driver):
         logger.debug(f"Running command: {command}")
         status, output = get_status_output(command)
         if status == 0:
-            return dict(line.split() for line in output.splitlines(keepends=False))
+            result = {}
+            for line in output.splitlines(keepends=False):
+                line = line.strip()
+                if line.startswith("#"):
+                    continue
+                fields = line.split()
+                logger.debug(f"fields: {fields}")
+                name = fields[0]
+                path = fields[-1]
+                result[name] = path
+            return result
         logger.error(output)
         if status == 127:  # Pyenv is not installed
             raise CommandNotFound(f"{output}. Have you installed conda?")
