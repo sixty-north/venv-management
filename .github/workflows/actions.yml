@@ -24,7 +24,7 @@ jobs:
         shell: bash -el {0}
         run: conda info
       - name: Conda list
-        shell: pwsh
+        shell: bash -el {0}
         run: conda list
 
 
