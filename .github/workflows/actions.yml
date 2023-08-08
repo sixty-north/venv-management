@@ -47,7 +47,7 @@ jobs:
           python -m pytest tests
 
   test-with-pyenv-noninteractive:
-    name: "Pytest with pyenv virtualenv interactive"
+    name: "Pytest with pyenv virtualenv non-interactive"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout repo"
@@ -67,9 +67,9 @@ jobs:
 
       - name: "Configure pyenv-virtualenv"
         run: |
-          echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-          echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-          echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+          echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.venvwraprc
+          echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.venvwraprc
+          echo 'eval "$(pyenv init -)"' >> ~/.venvwraprc
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 
       - name: "Install test dependencies"
@@ -79,6 +79,7 @@ jobs:
 
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_SETUP_FILEPATH=${HOME}/.venvwraprc
           python -m pytest tests
 
   test-with-virtualenv-sh-interactive:
