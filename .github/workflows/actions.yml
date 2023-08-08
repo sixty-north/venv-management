@@ -20,11 +20,12 @@ jobs:
       - name: "Initialize conda"
         run: |
           conda init bash
-          source ~/.bashrc
-          conda config --set auto_activate_base false
-          conda create -n testenv python=3.9
+
+      - name: "Use conda"
+        shell: bash -l {0}
+          conda create -n testenv
           conda activate testenv
-          
+
 
   test-with-pyenv-interactive:
     name: "Pytest with pyenv virtualenv interactive"
