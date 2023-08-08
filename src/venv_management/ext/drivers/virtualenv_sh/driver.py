@@ -45,7 +45,7 @@ class VirtualEnvShDriver(Driver):
             return output.splitlines(keepends=False)
         logger.debug(output)
         if status == 127:
-            raise CommandNotFound(output)
+            raise CommandNotFound(f"{output}. Have you installed virtualenv-sh?")
         raise RuntimeError(output)
 
     def make_virtual_env(

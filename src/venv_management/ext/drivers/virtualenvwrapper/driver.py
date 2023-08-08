@@ -49,7 +49,7 @@ class VirtualEnvWrapperDriver(Driver):
             return output.splitlines(keepends=False)
         logger.error(output)
         if status == 127:
-            raise CommandNotFound(output)
+            raise CommandNotFound(f"{output}. Have you installed virtualenvwrapper?")
         raise RuntimeError(output)
 
     def make_virtual_env(

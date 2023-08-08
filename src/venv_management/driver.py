@@ -179,17 +179,20 @@ def driver() -> Driver:
     """
     global _driver
     if _driver is None:
+        reasons = {}
         for driver_name in driver_names():
             try:
                 d = create_driver(driver_name)
-            except ImplementationNotFound:
-                pass
+            except ImplementationNotFound as e:
+                reasons[driver_name] = str(e)
             else:
                 _driver = d
                 break
         else:  # no-break
             raise ImplementationNotFound(
                 f"No virtualenv driver backed by a working implementation was found. "
-                f"Tried: {', '.join(map(repr, driver_names()))}."
+                f"Tried: {', '.join(map(repr, driver_names()))}.\n"
+                f"Reasons:\n"
+                f"\n".join(f"  {name}: {reason}" for name, reason in reasons.items())
             )
     return _driver

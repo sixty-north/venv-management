@@ -26,8 +26,8 @@ class PyEnvVirtualEnvDriver(Driver):
     def _check_availability(self):
         try:
             self.list_virtual_envs()
-        except CommandNotFound:
-            raise ImplementationNotFound(f"No implementation for {self.name}")
+        except CommandNotFound as e:
+            raise ImplementationNotFound(f"No implementation for {self.name} ; {str(e)}")
 
     def list_virtual_envs(self) -> List[str]:
         """A list of virtualenv names.
@@ -46,9 +46,9 @@ class PyEnvVirtualEnvDriver(Driver):
             return output.splitlines(keepends=False)
         logger.error(output)
         if status == 127:  # Pyenv is not installed
-            raise CommandNotFound(output)
+            raise CommandNotFound(f"{output}. Have you installed pyenv?")
         if status == 1:  # The subcommand passed to Pyenv is not recognized
-            raise CommandNotFound(output)
+            raise CommandNotFound(f"{output}. Have you installed pyenv-virtualenv?")
         raise RuntimeError(output)
 
     def make_virtual_env(
