@@ -119,10 +119,10 @@ Driver preference
 -----------------
 
 If you have multiple virtualenv wrapper implementations installed, you can specify the order in
-which they will be tried with the ``VENV_MANAGEMENT_DRIVER_PREFERENCE`` environment variable. The
+which they will be tried with the ``VENV_MANAGEMENT_PREFERRED_DRIVERS`` environment variable. The
 first working implementation will be used::
 
-  export VENV_MANAGEMENT_DRIVER_PREFERENCE="virtualenvwrapper,virtualenv-sh"
+  export VENV_MANAGEMENT_PREFERRED_DRIVERS="virtualenvwrapper,virtualenv-sh"
 
 .. inclusion-end-configuration-marker-do-not-remove
 
