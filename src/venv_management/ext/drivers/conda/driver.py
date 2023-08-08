@@ -56,9 +56,10 @@ class CondaDriver(Driver):
                 if line.startswith("#"):
                     continue
                 fields = line.split()
-                logger.debug(f"fields: {fields}")
+
                 name = fields[0]
                 path = fields[-1]
+                logger.debug(f"{name}: {path}")
                 result[name] = path
             return result
         logger.error(output)
