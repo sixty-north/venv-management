@@ -1,1 +1,1 @@
-from .driver import PyEnvVirtualEnvDriver as Driver
+from .driver import CondaDriver as Driver
