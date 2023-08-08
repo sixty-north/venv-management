@@ -20,8 +20,6 @@ jobs:
         uses: "gabrielfalcao/pyenv-action@v16"
       - name: "Show available Python versions"
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-dev
           # We need to modify .bashrc for interactive shells. venv-management will start a new shell
           # and run .bashrc when VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           # For non-interactive shells we may need to modify .bash_profile too, according the the
