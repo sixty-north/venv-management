@@ -18,11 +18,10 @@ jobs:
         uses: actions/checkout@v2
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v16"
-        with:
-          default: miniconda3-3.9.1
-          command: echo "Miniconda installed!!"
       - name: "Show available Python versions"
         run: |
+          conda install anaconda-clean
+          anaconda-clean --yes
           sudo apt-get update
           sudo apt-get install -y python3-dev
           echo ".bashrc follows >>>>"
@@ -49,16 +48,6 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          echo "Try to initialize conda"
-          conda init bash
-          echo "Show .bashrc after conda init >>>>"
-          cat ~/.bashrc
-          echo "Initialize shell"
-          source ~/.bashrc
-          #echo "Try to make an environment with conda"
-          #conda create -n testenv python=3.9
-          #echo "Try to activate an environment with conda"
-          #conda activate testenv
           eval "$(pyenv init -)"
           python -m pip install --user --upgrade pip
           pwd
