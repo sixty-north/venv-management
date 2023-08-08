@@ -60,9 +60,9 @@ jobs:
           #conda create -n testenv python=3.9
           #echo "Try to activate an environment with conda"
           #conda activate testenv
-          echo "Try to make an environment with pyenv"
-          pyenv virtualenv testenv
-          pyenv activate testenv
+          #echo "Try to make an environment with pyenv"
+          #pyenv virtualenv testenv
+          #pyenv activate testenv
           python -m pip install --user --upgrade pip
           pwd
           ls
