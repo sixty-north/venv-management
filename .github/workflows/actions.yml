@@ -41,7 +41,6 @@ jobs:
       - name: "Run Pytest"
         shell: bash -el {0}
         run: |
-          export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
 
