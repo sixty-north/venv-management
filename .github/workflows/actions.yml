@@ -20,6 +20,7 @@ jobs:
         uses: "gabrielfalcao/pyenv-action@v16"
         with:
           default: miniconda3-3.9.1
+          command: echo "Miniconda installed!!"
       - name: "Show available Python versions"
         run: |
           sudo apt-get update
