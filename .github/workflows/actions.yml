@@ -28,6 +28,7 @@ jobs:
 
       - name: "Install dependencies"
         run: |
+          eval "$(pyenv init -)"
           python -m pip install --user --upgrade pip
           pwd
           ls
