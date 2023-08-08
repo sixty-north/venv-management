@@ -122,7 +122,9 @@ class CondaDriver(Driver):
         # Create a virtual environment with conda using a command like:
         #   conda create --name myenv python=3.6
 
-        python_arg = f"python={python}" if python else ""
+        # For conda create we need to specify at leaast "python", otherwise Python will not be
+        # installed into the environment.
+        python_arg = f"python={python}" if python else "python"
         #system_site_packages_arg = "--system-site-packages" if system_site_packages else ""
         #pip_arg = parse_package_arg("pip", pip)
         #setuptools_arg = parse_package_arg("setuptools", setuptools)
@@ -139,7 +141,7 @@ class CondaDriver(Driver):
         )
 
         # Create
-        create_command = sub_shell_command(f"conda create --name {name} {args}")
+        create_command = sub_shell_command(f"conda create -n {name} {args}")
         logger.info(create_command)
         status, output = get_status_output(create_command)
 
