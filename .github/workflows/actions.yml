@@ -46,12 +46,14 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          echo "Try to make an environment with conda"
-          conda create -n testenv python=3.9
           echo "Try to initialize conda"
           conda init bash
+          echo "Show .bashrc after conda init >>>>"
+          cat ~/.bashrc
           echo "Initialize shell"
           source ~/.bashrc
+          echo "Try to make an environment with conda"
+          conda create -n testenv python=3.9
           echo "Try to activate an environment with conda"
           conda activate testenv
           eval "$(pyenv init -)"
