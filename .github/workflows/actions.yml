@@ -25,9 +25,9 @@ jobs:
           echo ".bashrc follows >>>>"
           cat ~/.bashrc
           echo "Try to initialize conda"
-          conda init bash
-          echo "Show .bashrc after conda init >>>>"
-          cat ~/.bashrc
+          #conda init bash
+          #echo "Show .bashrc after conda init >>>>"
+          #cat ~/.bashrc
           # We need to modify .bashrc for interactive shells. venv-management will start a new shell
           # and run .bashrc when VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           # For non-interactive shells we may need to modify .bash_profile too, according the the
@@ -49,6 +49,7 @@ jobs:
           which python3
           which python3-config
           which conda
+          sudo rm /usr/bin/conda
           
 
       - name: "Install dependencies"
