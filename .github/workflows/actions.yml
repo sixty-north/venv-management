@@ -10,6 +10,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  test-with-conda:
+    name: "Pytest with conda interactive"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout repo"
+        uses: actions/checkout@v2
+
+      - name: "Initialize conda"
+        run: |
+          conda init bash
+          source ~/.bashrc
+          conda config --set auto_activate_base false
+          conda create -n testenv python=3.9
+          conda activate testenv
+          
+
   test-with-pyenv-interactive:
     name: "Pytest with pyenv virtualenv interactive"
     runs-on: "ubuntu-latest"
