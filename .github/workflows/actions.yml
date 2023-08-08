@@ -178,6 +178,7 @@ jobs:
     name: "Build Package Distributions"
     needs:
       - test-with-pyenv-interactive
+      - test-with-pyenv-noninteractive
       - test-with-virtualenv-sh-interactive
       - test-with-virtualenvwrapper-interactive
       - test-with-virtualenvwrapper-and-venvwraprc-noninterative
