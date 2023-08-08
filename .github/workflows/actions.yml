@@ -33,9 +33,7 @@ jobs:
           eval "$(pyenv init -)"
           pyenv shell system
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
-          source ~/.bashrc
           sudo rm /usr/bin/conda
-          
 
       - name: "Install dependencies"
         run: |
