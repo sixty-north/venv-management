@@ -46,6 +46,7 @@ jobs:
           python -m pip install --user .[test]
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
   test-with-virtualenv-sh-interactive:
