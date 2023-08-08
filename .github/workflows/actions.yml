@@ -62,6 +62,7 @@ jobs:
           ls
           python -m pip install --user .[test]
       - name: "Run Pytest"
+        shell: bash -l {0}
         run: |
           #export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
