@@ -46,7 +46,8 @@ jobs:
           pyenv shell system
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
           source ~/.bashrc
-          which python
+          which python3
+          which python3-config
 
       - name: "Install dependencies"
         run: |
