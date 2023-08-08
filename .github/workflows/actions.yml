@@ -4,9 +4,9 @@ name: CI
 on:
   push:
     tags: ["release/v*"]
-    branches: ["master", "pyenv-actions"]
+    branches: ["master", "conda"]
   pull_request:
-    branches: ["master", "pyenv-actions"]
+    branches: ["master", "conda"]
   workflow_dispatch:
 
 jobs:
