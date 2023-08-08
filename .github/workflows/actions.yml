@@ -19,7 +19,7 @@ jobs:
 
       - name: "Disable conda"
         # Conda is installed by default on GitHub Actions and interferes with pyenv
-        # Sadly, pyenv-virtualenv doesn't work with conda any more
+        # Sadly, pyenv-virtualenv doesn't work with conda anymore
         # https://github.com/pyenv/pyenv-virtualenv/issues/270
         # We crudely remove it by deleting the binary - this is sufficient to stop
         # pyenv-virtualenv from trying to use it
@@ -141,6 +141,7 @@ jobs:
   package:
     name: "Build Package Distributions"
     needs:
+      - test-with-pyenv-interactive
       - test-with-virtualenv-sh-interactive
       - test-with-virtualenvwrapper-interactive
       - test-with-virtualenvwrapper-and-venvwraprc-noninterative
