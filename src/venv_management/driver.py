@@ -190,9 +190,13 @@ def driver() -> Driver:
                 break
         else:  # no-break
             raise ImplementationNotFound(
-                f"No virtualenv driver backed by a working implementation was found. "
-                f"Tried: {', '.join(map(repr, driver_names()))}.\n"
-                f"Reasons:\n"
-                f"\n".join(f"  {name}: {reason}" for name, reason in reasons.items())
+                "No virtualenv driver backed by a working implementation was found. "
+                "Tried: {tried}.\n"
+                "Reasons:\n"
+                "{reasons}"
+                .format(
+                    tried=', '.join(map(repr, driver_names())),
+                    reasons='\n'.join(f'  {name}: {reason}' for name, reason in reasons.items())
+                )
             )
     return _driver
