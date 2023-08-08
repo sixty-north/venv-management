@@ -32,6 +32,9 @@ jobs:
       - name: Conda activate virtualenv
         shell: bash -el {0}
         run: conda activate testenv
+      - name: Conda init
+        shell: bash -el {0}
+        run: conda init bash
 
       - name: "Install test dependencies"
         run: |
