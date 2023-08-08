@@ -24,6 +24,7 @@ jobs:
           eval "$(pyenv init -)"
           pyenv versions
           pyenv shell system
+          conda env list
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 
       - name: "Install dependencies"
