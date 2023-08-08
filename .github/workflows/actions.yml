@@ -48,6 +48,8 @@ jobs:
         run: |
           echo "Try to make an environment with conda"
           conda create -n testenv python=3.9
+          echo "Try to activate an environment with conda"
+          conda activate testenv
           eval "$(pyenv init -)"
           python -m pip install --user --upgrade pip
           pwd
