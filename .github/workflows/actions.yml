@@ -26,6 +26,9 @@ jobs:
       - name: Conda list
         shell: bash -el {0}
         run: conda list
+      - name: Conda create virtualenv
+        shell: bash -el {0}
+        run: conda create -n testenv
 
 
   test-with-pyenv-interactive:
