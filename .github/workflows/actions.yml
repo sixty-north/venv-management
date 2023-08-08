@@ -42,8 +42,6 @@ jobs:
           echo "Initialize shell"
           source ~/.bashrc
           python -m pip install --user --upgrade pip
-          pwd
-          ls
           python -m pip install --user .[test]
       - name: "Run Pytest"
         run: |
