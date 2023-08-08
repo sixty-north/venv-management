@@ -32,7 +32,7 @@ jobs:
           echo $PYENV_ROOT
           eval "$(pyenv init -)"
           echo $PYENV_ROOT
-          
+          ls -la ~/.bash*
           pyenv versions
           pyenv shell system
           git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
