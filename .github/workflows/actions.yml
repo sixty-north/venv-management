@@ -21,6 +21,7 @@ jobs:
 
       - name: "Show available Python versions"
         run: |
+          apt-get install -y python-dev
           echo ".bashrc follows >>>>"
           cat ~/.bashrc
           # We need to modify .bashrc for interactive shells. venv-management will start a new shell
