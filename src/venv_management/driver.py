@@ -193,10 +193,13 @@ def driver() -> Driver:
                 "No virtualenv driver backed by a working implementation was found. "
                 "Tried: {tried}.\n"
                 "Reasons:\n"
-                "{reasons}"
+                "{reasons}\n"
                 .format(
                     tried=', '.join(map(repr, driver_names())),
-                    reasons='\n'.join(f'  {name}: {reason}' for name, reason in reasons.items())
+                    reasons='\n'.join('  {name}: {reason}'.format(
+                        name=name,
+                        reason=reason.replace("\n", " ")
+                    ) for name, reason in reasons.items())
                 )
             )
     return _driver
