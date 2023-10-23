@@ -65,7 +65,7 @@ class Driver(Extension):
             pip=True,
             setuptools=True,
             wheel=True,
-    ):
+    ) -> Path | None:
         """Make a virtual env.
 
         Args:

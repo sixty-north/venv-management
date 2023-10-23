@@ -26,7 +26,7 @@ def check_environment() -> Tuple[int, str]:
 
 
 # TODO: Use a more generic name for this function
-def has_virtualenvwrapper():
+def has_virtualenvwrapper() -> bool:
     """Determine whether virtualenvwrapper available and working.
 
     Returns:
@@ -63,7 +63,7 @@ def make_virtual_env(
     pip=True,
     setuptools=True,
     wheel=True,
-):
+) -> Path | None:
     """Make a virtual env.
 
     Args:
@@ -112,7 +112,7 @@ def make_virtual_env(
     )
 
 
-def resolve_virtual_env(name):
+def resolve_virtual_env(name) -> Path:
     """Given the name of a virtual environment, get its path.
 
     Args:
@@ -157,7 +157,7 @@ def virtual_env(name, expected_version=None, *, force=False, **kwargs):
         remove_virtual_env(name)
 
 
-def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs):
+def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs) -> Path | None:
     """Ensure a virtualenv with the given name and version exists.
 
     Args:
