@@ -5,7 +5,7 @@ import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 import logging
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from venv_management.driver import driver
 from venv_management.errors import ImplementationNotFound
@@ -63,7 +63,7 @@ def make_virtual_env(
     pip=True,
     setuptools=True,
     wheel=True,
-) -> Path | None:
+) -> Optional[Path]:
     """Make a virtual env.
 
     Args:
@@ -157,7 +157,7 @@ def virtual_env(name, expected_version=None, *, force=False, **kwargs):
         remove_virtual_env(name)
 
 
-def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs) -> Path | None:
+def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs) -> Optional[Path]:
     """Ensure a virtualenv with the given name and version exists.
 
     Args:

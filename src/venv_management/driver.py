@@ -3,7 +3,7 @@
 
 from abc import abstractmethod
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from venv_management.environment import preferred_drivers
 from venv_management.errors import ImplementationNotFound
@@ -65,7 +65,7 @@ class Driver(Extension):
             pip=True,
             setuptools=True,
             wheel=True,
-    ) -> Path | None:
+    ) -> Optional[Path]:
         """Make a virtual env.
 
         Args:
