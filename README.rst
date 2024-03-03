@@ -5,7 +5,7 @@ Venv Management
 A Python package for programmatic creation and management of Python virtual environments.
 
 
-.. image:: https://github.com/rob-smallshire/venv-management/workflows/actions.yml/badge.svg?branch=master
+.. image:: https://github.com/sixty-north/venv-management/actions/workflows/actions.yml/badge.svg
      :target: https://github.com/sixty-north/venv-management/actions?workflow=CI
      :alt: CI Status
 
