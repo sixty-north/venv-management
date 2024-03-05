@@ -35,3 +35,13 @@ environment variables::
 
 This will allow ``venv-management`` to ensure that *virtualenvwrapper* is properly initialized
 before its commands are executed.
+
+
+Configuring for use with *venv*
+-------------------------------
+
+If the *venv* driver is used, the `venv <https://docs.python.org/3/library/venv.html>`_ module is
+used to create Python virtual environments. These environments are created in the directory
+specified by the ``VENV_MANAGEMENT_VENV_DIR`` environment variable. If this variable is not set,
+the default value of ``$WORKON_HOME/<env-name>`` is used. If ``WORKON_HOME`` is not set, the
+default value of ``$HOME/.virtualenvs/<env-name>`` is used.

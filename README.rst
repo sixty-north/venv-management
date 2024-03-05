@@ -20,10 +20,10 @@ This document gives an overview. For more detail see the `documentation <https:/
 Prerequisites
 =============
 
-A virtualenvwrapper installation must have been installed and be available in a shell and configured
-at shell start-up in the appropriate ``rc`` file (*e.g.* ``.bashrc``, but the documentation for more
-details and options). The following virtualenvwrapper implementations have been tested:
+None, other than a working Python installation, though depending on which virtual environment
+management tool you wish to use, there may be additional requirements. The following are supported:
 
+  * `venv <https://docs.python.org/3/library/venv.html>`_
   * `virtualenvwrapper <https://pypi.org/project/virtualenvwrapper/>`_
   * `virtualenv-sh <https://pypi.org/project/virtualenv-sh/>`_
   * `pyenv-virtualenv <https://github.com/pyenv/pyenv-virtualenv>`_
@@ -69,11 +69,12 @@ Shell selection
 ---------------
 
 This ``venv-management`` package delegates most operations to one of the ``virtualenvwrapper`` or
-equivalent tools, which are implemented using shell scripts and shell functions. In order to invoke
-these scripts and functions successfully the shell environment mush have been correctly configured.
-By default ``venv-management`` attempts to use the current user's preferred shell by examining the
-``$SHELL`` environment variable. This can be overridden by setting the ``$VENV_MANAGEMENT_SHELL``
-variable with a shell executable name or the path to a shell executable, for example::
+equivalent tools, some of which are implemented using shell scripts and shell functions.
+In order to invoke these scripts and functions successfully the shell environment mush have been
+correctly configured. By default ``venv-management`` attempts to use the current user's preferred
+shell by examining the ``$SHELL`` environment variable. This can be overridden by setting the
+``$VENV_MANAGEMENT_SHELL`` variable with a shell executable name or the path to a shell executable,
+for example::
 
   export VENV_MANAGEMENT_SHELL=zsh
 
@@ -112,7 +113,8 @@ the commands run by this package::
   export VENV_MANAGEMENT_USE_SETUP=yes
   export VENV_MANAGEMENT_SETUP_FILEPATH=$HOME/.venvwraprc
 
-You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or ``.`` command,
+You can also source this custom config file in a shell-specific ``rc`` file using the ``source`` or
+``.`` command,
 so that ``virtualenvwrapper`` could be used in interactive shells.
 
 Driver preference
@@ -122,29 +124,10 @@ If you have multiple virtualenv wrapper implementations installed, you can speci
 which they will be tried with the ``VENV_MANAGEMENT_PREFERRED_DRIVERS`` environment variable. The
 first working implementation will be used::
 
-  export VENV_MANAGEMENT_PREFERRED_DRIVERS="virtualenvwrapper,virtualenv-sh"
+  export VENV_MANAGEMENT_PREFERRED_DRIVERS="virtualenvwrapper,virtualenv-sh,venv"
+
+You can also exclude a driver from consideration by using the ``VENV_MANAGEMENT_EXCLUDED_DRIVERS``::
+
+  export VENV_MANAGEMENT_EXCLUDED_DRIVERS="venv"
 
 .. inclusion-end-configuration-marker-do-not-remove
-
-
-Release process
-===============
-
-
-Upgrade the version::
-
-    $ bumpversion <major | minor | patch>
-
-Push the tagged commit into the repository together with the tag. You can find the latest tag using the
-``git tag`` command or find and fill in the most recent tag with ``git describe``::
-
-    $ git push --atomic origin master $(git describe --abbrev=0 --tags)
-
-Create the source and the binary distribution (outputs in the ``dist`` directory)::
-
-    $ python setup.py sdist bdist_wheel
-
-Remove old versions in the ``dist`` directory and use the following command to upload its contents to PyPI::
-
-    $ twine upload dist/* --config-file=<path/to/file/with/credentials.pypirc>
-
