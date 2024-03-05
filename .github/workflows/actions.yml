@@ -226,7 +226,8 @@ jobs:
       - test-with-virtualenvwrapper-interactive
       - test-with-virtualenvwrapper-and-venvwraprc-noninterative
       - test-with-virtualenvwrapper-and-venvwraprc-interactive
-      - test-with-venv
+      - test-with-venv-linux
+      - test-with-venv-windows
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
