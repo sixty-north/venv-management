@@ -1,8 +1,9 @@
 import configparser
 from pathlib import Path
+from typing import Union
 
 
-def pyvenv_config(env_dirpath: Path, key: str) -> str | None:
+def pyvenv_config(env_dirpath: Path, key: str) -> Union[str, None]:
     """Read a value from a pyvenv config file.
 
     Args:
