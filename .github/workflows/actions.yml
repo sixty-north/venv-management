@@ -43,6 +43,7 @@ jobs:
 
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=pyenv-virtualenv
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
@@ -79,6 +80,7 @@ jobs:
 
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=pyenv-virtualenv
           export VENV_MANAGEMENT_SETUP_FILEPATH=${HOME}/.venvwraprc
           python -m pytest tests
 
@@ -104,6 +106,7 @@ jobs:
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=virtualenv-sh
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
@@ -125,6 +128,7 @@ jobs:
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=virtualenvwrapper
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           python -m pytest tests
 
@@ -148,6 +152,7 @@ jobs:
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=virtualenvwrapper
           export VENV_MANAGEMENT_SETUP_FILEPATH=${HOME}/.venvwraprc
           python -m pytest tests
 
@@ -170,6 +175,7 @@ jobs:
           python -m pip install .[test]
       - name: "Run Pytest"
         run: |
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=virtualenvwrapper
           export VENV_MANAGEMENT_INTERACTIVE_SHELL=yes
           export VENV_MANAGEMENT_SETUP_FILEPATH=${HOME}/.venvwraprc
           python -m pytest tests
