@@ -180,6 +180,25 @@ jobs:
           export VENV_MANAGEMENT_SETUP_FILEPATH=${HOME}/.venvwraprc
           python -m pytest tests
 
+  test-with-venv:
+    name: "Pytest with venv"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up Python"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --user --upgrade pip
+          python -m pip install .[test]
+      - name: "Run Pytest"
+        run: |
+          export WORKON_HOME=${HOME}/.virtualenvs
+          export VENV_MANAGEMENT_PREFERRED_DRIVERS=venv
+          python -m pytest tests
+
   package:
     name: "Build Package Distributions"
     needs:
@@ -189,6 +208,7 @@ jobs:
       - test-with-virtualenvwrapper-interactive
       - test-with-virtualenvwrapper-and-venvwraprc-noninterative
       - test-with-virtualenvwrapper-and-venvwraprc-interactive
+      - test-with-venv
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
