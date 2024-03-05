@@ -159,7 +159,7 @@ def create_driver(driver_name) -> Driver:
     return driver
 
 
-def driver_names() -> List[Driver]:
+def driver_names() -> list[Driver]:
     """A list of available driver extensions.
 
     There is no guarantee that the listed drivers are backed by functioning virtualenvwrapper

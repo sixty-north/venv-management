@@ -26,6 +26,7 @@ def sub_shell_command(command, suppress_setup_output=True):
 
     Raises:
         ValueError: If the subshell command could not be determined.
+        RuntimeError: If the path to the shell could not be determined.
     """
     preferred_shell_name = os.environ.get("SHELL", "bash")
     logger.debug("preferred_shell_name from $SHELL = %r", preferred_shell_name)

@@ -30,7 +30,7 @@ class PyEnvVirtualEnvDriver(Driver):
     def _check_availability(self):
         try:
             self.list_virtual_envs()
-        except CommandNotFound as e:
+        except (CommandNotFound, RuntimeError) as e:
             raise ImplementationNotFound(f"No implementation for {self.name} ; {str(e)}")
 
     def list_virtual_envs(self) -> List[str]:

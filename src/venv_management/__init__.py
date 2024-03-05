@@ -1,8 +1,6 @@
 
 from .version import __version__, __version_info__
 from .api import (
-    check_environment,
-    has_virtualenvwrapper,
     list_virtual_envs,
     make_virtual_env,
     resolve_virtual_env,
@@ -22,8 +20,6 @@ from .errors import (
 )
 
 __all__ = [
-    "check_environment",
-    "has_virtualenvwrapper",
     "list_virtual_envs",
     "make_virtual_env",
     "resolve_virtual_env",

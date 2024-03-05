@@ -40,9 +40,15 @@ def preferred_drivers(available_driver_names):
         A list of available driver names, with the preferred drivers first.
     """
     preferred_driver_names = expandvars(os.environ.get("VENV_MANAGEMENT_PREFERRED_DRIVERS", "")).split(",")
-    return list(
+    names = list(
         chain(
             [driver_name for driver_name in preferred_driver_names if driver_name in available_driver_names],
             [driver_name for driver_name in available_driver_names if driver_name not in preferred_driver_names],
         )
     )
+    # The "venv" driver should always work, so if no preference was expressed, and if it's available, try it last
+    # so that more 'sophisticated' implementations get an opportunity.
+    if len(preferred_driver_names) == 0 and "venv" in names:
+        names.remove("venv")
+        names.append("venv")
+    return names

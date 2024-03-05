@@ -1,46 +1,20 @@
 """The public API.
 """
-
 import subprocess
+import sys
 from contextlib import contextmanager
 from pathlib import Path
 import logging
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from venv_management.driver import driver
-from venv_management.errors import ImplementationNotFound
+from venv_management.pyenv_config import pyvenv_config
 from venv_management.utilities import compatible_versions
-from venv_management.shell import sub_shell_command, get_status_output
 
 logger = logging.getLogger(__file__)
 
 
-def check_environment() -> Tuple[int, str]:
-    """
-
-    Returns: A 2-tuple containing the status output of the setup command, and text output
-
-    """
-    command = sub_shell_command("", suppress_setup_output=False)
-    return get_status_output(command)
-
-
-# TODO: Use a more generic name for this function
-def has_virtualenvwrapper() -> bool:
-    """Determine whether virtualenvwrapper available and working.
-
-    Returns:
-        True if virtualenvwrapper is available and working,
-        otherwise False.
-    """
-    try:
-        driver()
-    except ImplementationNotFound:
-        return False
-    return True
-
-
-def list_virtual_envs() -> List[str]:
+def list_virtual_envs() -> list[str]:
     """A list of virtualenv names.
 
     Returns:
@@ -176,9 +150,6 @@ def ensure_virtual_env(name, expected_version=None, *, force=False, **kwargs) ->
     Raises:
         RuntimeError: If the virtual environment couldn't be created or replaced.
     """
-    status, output = check_environment()
-    if status != 0:
-        raise RuntimeError(output)
     python_arg = f"python{expected_version}" if (expected_version is not None) else None
     try:
         env_dirpath = resolve_virtual_env(name)
@@ -247,8 +218,17 @@ def python_executable_path(env_dirpath: Union[Path, str]) -> Path:
     Raises:
         ValueError: If the env_dirpath is not a virtual environment.
     """
-    dirpath = Path(env_dirpath)
-    exe_filepath = dirpath / "bin" / "python"
+    env_dirpath = Path(env_dirpath)
+    exe_filepath = pyvenv_config(env_dirpath, "executable")
+
+    if not exe_filepath:
+        exe_filepath = (
+            env_dirpath / "Scripts" / "python.exe"
+            if sys.platform == "win32" else
+            env_dirpath / "bin" / "python"
+        )
+    exe_filepath = Path(exe_filepath)
+
     if not exe_filepath.exists():
         raise ValueError(
             f"Could not locate Python executable for supposed virtual environment {env_dirpath}"
@@ -288,8 +268,11 @@ def python_version(env_dirpath: Union[Path, str]) -> str:
     Raises:
         ValueError: If the env_dirpath is not a virtual environment.
     """
-    name = python_name(env_dirpath)
-    version = name.split()[-1]
+    env_dirpath = Path(env_dirpath)
+    version = pyvenv_config(env_dirpath, "version")
+    if not version:
+        name = python_name(env_dirpath)
+        version = name.split()[-1]
     return version
 
 
