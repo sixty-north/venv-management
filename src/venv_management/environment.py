@@ -31,7 +31,10 @@ def shell_is_interactive():
 
 
 def preferred_drivers(available_driver_names):
-    """The preferred drivers from optionally controlled by VENV_MANAGEMENT_PREFERRED_DRIVERS.
+    """The preferred drivers.
+
+    The preferred drivers are controlled by the VENV_MANAGEMENT_PREFERRED_DRIVERS and VENV_MANAGEMENT_EXCLUDE_DRIVERS
+    environment variables, each of which can include a comma-separated list of driver names.
 
     Args:
         available_driver_names: A list of available driver names.
@@ -40,12 +43,16 @@ def preferred_drivers(available_driver_names):
         A list of available driver names, with the preferred drivers first.
     """
     preferred_driver_names = expandvars(os.environ.get("VENV_MANAGEMENT_PREFERRED_DRIVERS", "")).split(",")
+    excluded_driver_names = expandvars(os.environ.get("VENV_MANAGEMENT_EXCLUDED_DRIVERS", "")).split(",")
     names = list(
+        driver for driver in
         chain(
             [driver_name for driver_name in preferred_driver_names if driver_name in available_driver_names],
             [driver_name for driver_name in available_driver_names if driver_name not in preferred_driver_names],
         )
+        if driver not in excluded_driver_names
     )
+
     # The "venv" driver should always work, so if no preference was expressed, and if it's available, try it last
     # so that more 'sophisticated' implementations get an opportunity.
     if len(preferred_driver_names) == 0 and "venv" in names:
