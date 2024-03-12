@@ -53,7 +53,14 @@ class VEnvDriver(Driver):
             self._venvs_dirpath.mkdir(parents=True, exist_ok=True)
 
         virtualenv_dirpath = self._venvs_dirpath / name
-        python_exe = Path(python or sys.executable)
+
+        if python:
+            python_exe = Path(python)
+            if not python_exe.is_file():
+                if (found := shutil.which(python)) is not None:
+                    python_exe = Path(found)
+        else:
+            python_exe = Path(sys.executable)
 
         if not python_exe.is_file():
             raise PythonNotFound(f"Could not locate Python {python}")
