@@ -124,7 +124,7 @@ class PyEnvVirtualEnvDriver(Driver):
         )
 
         # Create
-        create_command = sub_shell_command(f"pyenv virtualenv {args} {name}")
+        create_command = sub_shell_command(f'pyenv virtualenv {args} "{name}"')
         logger.info(create_command)
         status, output = get_status_output(create_command)
         m = NO_SUCH_PYTHON_REGEX.search(output)
