@@ -219,15 +219,10 @@ def python_executable_path(env_dirpath: Union[Path, str]) -> Path:
         ValueError: If the env_dirpath is not a virtual environment.
     """
     env_dirpath = Path(env_dirpath)
-    exe_filepath = pyvenv_config(env_dirpath, "executable")
-
-    if not exe_filepath:
-        exe_filepath = (
-            env_dirpath / "Scripts" / "python.exe"
-            if sys.platform == "win32" else
-            env_dirpath / "bin" / "python"
-        )
-    exe_filepath = Path(exe_filepath)
+    if sys.platform == 'win32':
+        exe_filepath = env_dirpath / "Scripts" / "python.exe"
+    else:
+        exe_filepath = env_dirpath / "bin" / "python"
 
     if not exe_filepath.exists():
         raise ValueError(
