@@ -4,8 +4,8 @@
 import inspect
 from abc import ABC, abstractmethod
 from pathlib import Path
+import importlib.resources
 
-import pkg_resources
 import stevedore
 import stevedore.exception
 
@@ -42,7 +42,7 @@ def _extension_dirpath(ext: stevedore.extension.Extension) -> Path:
     Returns:
         A absolute Path to the package containing the extension.
     """
-    return Path(pkg_resources.resource_filename(ext.module_name, ""))
+    return Path(importlib.resources.files(ext.module_name))
 
 
 class Extension(ABC):
@@ -72,7 +72,7 @@ class Extension(ABC):
     def dirpath(cls):
         """The directory path to the extension package."""
         package_name = inspect.getmodule(cls).__package__
-        return pkg_resources.resource_filename(package_name, "")
+        return Path(importlib.resources.files(package_name))
 
     @property
     def version(self):
