@@ -27,9 +27,9 @@ jobs:
           sudo rm /usr/bin/conda
 
       - name: "Install pyenv"
-        uses: "mncharlton/pyenv-action@v18"
+        uses: "mncharlton/pyenv-action@patch-1"
         with:
-          command: 'echo "Installed pyenv'
+          command: "echo 'Installed pyenv'"
 
       - name: "Configure pyenv-virtualenv"
         run: |
@@ -68,7 +68,7 @@ jobs:
       - name: "Install pyenv"
         uses: "gabrielfalcao/pyenv-action@v18"
         with:
-          command: 'echo "Installed pyenv'
+          command: "echo 'Installed pyenv'"
 
       - name: "Configure pyenv-virtualenv"
         run: |
