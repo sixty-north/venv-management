@@ -27,7 +27,7 @@ jobs:
           sudo rm /usr/bin/conda
 
       - name: "Install pyenv"
-        uses: "gabrielfalcao/pyenv-action@v18"
+        uses: "mncharlton/pyenv-action@v18"
 
       - name: "Configure pyenv-virtualenv"
         run: |
