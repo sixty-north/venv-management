@@ -66,7 +66,7 @@ jobs:
           sudo rm /usr/bin/conda
 
       - name: "Install pyenv"
-        uses: "gabrielfalcao/pyenv-action@v18"
+        uses: "gabrielfalcao/pyenv-action@main"
         with:
           command: "echo 'Installed pyenv'"
 
